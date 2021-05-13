@@ -29,7 +29,7 @@ import java.util.*;
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> implements ProblemService {
 
     private static final String PRO_TIMES_KEY = "proTimes";
-    private static final String PRO_REDIS_BREAK = "_";
+    private static final String PRO_REDIS_BREAK = "%%";
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;

@@ -1,8 +1,11 @@
 package xyz.lizhaorong.queoj.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -40,6 +43,7 @@ public class Problem implements Serializable {
 
     private String tags;
 
+    @TableField("`like`")
     private Integer like;
 
     private Integer unlike;

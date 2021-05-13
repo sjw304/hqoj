@@ -2,6 +2,7 @@ package xyz.lizhaorong.queoj.controller;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ public class ProblemController extends BaseController {
     ProblemService problemService;
 
     @GetMapping
+    @ApiOperation(value = "getProblemList",notes = "获取题目列表（分页）,只会返回如下字段：id, name, point, level, tags, `like`, unlike")
     public Response<List<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo pageInfo){
         Result<List<Problem>> res = problemService.getProblemList(tags, searchVal, level, pageInfo);
         return returnResult(res);
@@ -43,12 +45,14 @@ public class ProblemController extends BaseController {
 
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "getProblemById",notes = "用id，获取题目全部信息")
     public Response<Problem> getProblemById(@PathVariable("id") Integer id){
         Result<Problem> result = problemService.getProblemById(id);
         return returnResult(result);
     }
 
     @GetMapping("/hot")
+    @ApiOperation(value = "getHotProblemList",notes = "获取热题榜，只包含id,name")
     public Response<List<Problem>> getHotProblemList(){
         Result<List<Problem>> result = problemService.getHotProblemList();
         return returnResult(result);
