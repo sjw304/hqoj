@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import springfox.documentation.annotations.ApiIgnore;
 import xyz.lizhaorong.queoj.controller.dto.TagVo;
 import xyz.lizhaorong.queoj.entity.Result;
 import xyz.lizhaorong.queoj.entity.Tag;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/tag")
-@Api(tags = "tag")
+@Api(tags = "标签信息")
 @Slf4j
 public class TagController extends BaseController {
 
@@ -45,10 +46,9 @@ public class TagController extends BaseController {
     }
 
     @PutMapping
-    //@Authorization
+    @Authorization
     @ApiOperation("修改/创建tag")
-    //@ApiImplicitParam(name = "tag",paramType = "form",value = "tag信息")
-    public Response<Void> setTag(@Validated TagVo tag){
+    public Response<Void> setTag(@Validated TagVo tag, @ApiIgnore @RequestAttribute(Authorization.USERID_ATTR) String loginUserId){
         Tag tag1 = new Tag();
         BeanUtils.copyProperties(tag,tag1);
         log.debug("tag : {}",tag);

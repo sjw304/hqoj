@@ -1,6 +1,7 @@
 package xyz.lizhaorong.queoj.security.token;
 
 
+import xyz.lizhaorong.queoj.security.token.entity.CheckResult;
 import xyz.lizhaorong.queoj.security.token.entity.SimpleUser;
 import xyz.lizhaorong.queoj.security.token.entity.TokenObject;
 import xyz.lizhaorong.queoj.support.ErrorCode;
@@ -20,6 +21,6 @@ public interface TokenManager {
     /**
      * 检查accessToken
      */
-    ErrorCode checkAuthorization(String accessToken, int role, String addr);
+    CheckResult checkAuthorization(String accessToken, int role, String addr);
 
 }

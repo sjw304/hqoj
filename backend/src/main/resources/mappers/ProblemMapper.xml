@@ -4,12 +4,23 @@
 <mapper namespace="xyz.lizhaorong.queoj.mapper.ProblemMapper">
 
     <select id="getProblemList" resultType="xyz.lizhaorong.queoj.entity.Problem">
-        select *
+        select id, name, point, level, tags, `like`, unlike
         from problem
         <where>
-            <if  test="tags!=null and tags.length > 0">
-
+            <if test="level!=null">
+                level = #{level}
+            </if>
+            <if  test="tagSearch!=null">
+                AND json_contains(tags->"$", '${tagSearch}')
+            </if>
+            <if test="lastId>0">
+                AND id > #{lastId}
             </if>
         </where>
+        limit
+        <if test="lastId==0 and pageNumber!=0">
+            #{pageNumber}*#{pageSize},
+        </if>
+        #{pageSize}
     </select>
 </mapper>

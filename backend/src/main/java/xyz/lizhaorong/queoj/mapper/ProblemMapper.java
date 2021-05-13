@@ -16,8 +16,10 @@ import java.util.List;
  */
 public interface ProblemMapper extends BaseMapper<Problem> {
 
-    List<Problem> getProblemList(@Param("tags") Integer[] tags,
+    List<Problem> getProblemList(@Param("tagSearch") String tagSearch,
                                  @Param("level") Integer level,
                                  @Param("pageSize") Integer pageSize,
-                                 @Param("pageNumber") Integer pageNumber);
+                                 @Param("pageNumber") Integer pageNumber,
+                                 @Param("lastId") Integer lastId
+    );
 }

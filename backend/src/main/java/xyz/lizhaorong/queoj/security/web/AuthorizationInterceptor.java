@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import xyz.lizhaorong.queoj.security.token.TokenManager;
+import xyz.lizhaorong.queoj.security.token.entity.CheckResult;
 import xyz.lizhaorong.queoj.support.ErrorCode;
 import xyz.lizhaorong.queoj.support.Response;
 
@@ -34,24 +35,25 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         //检查是否需要身份验证
         int atVal = needAuthorization(handler);
 
-        //从header中得到token
-        String authorization = request.getHeader("Authorization");
-
+        CheckResult result;
         // 需要身份验证
         if (atVal >0) {
+            //从header中得到token
+            String authorization = request.getHeader("Authorization");
 
             //解析
-            ErrorCode res = tokenManager.checkAuthorization(authorization, atVal, ServletUtil.getClientIP(request));
+            result = tokenManager.checkAuthorization(authorization, atVal, ServletUtil.getClientIP(request));
 
             //解析无误
-            if(res==null) {
+            if(result.isSuccess()) {
+                request.setAttribute(Authorization.USERID_ATTR,result.getUser().getUserId());
                 return true;
             }
 
             //是rest接口，返回错误码
             if(isRestInterface(handler)){
                 response.setContentType("text/html;charset=utf-8");
-                final String s = mapper.writeValueAsString(Response.failure(res));
+                final String s = mapper.writeValueAsString(Response.failure(result.getErrorCode()));
                 response.getWriter().write(s);
                 return false;
             }
@@ -61,6 +63,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
+
         return true;
     }
 

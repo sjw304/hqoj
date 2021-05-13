@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import xyz.lizhaorong.queoj.security.token.entity.CheckResult;
 import xyz.lizhaorong.queoj.security.token.entity.SimpleUser;
 import xyz.lizhaorong.queoj.security.token.entity.TokenObject;
 import xyz.lizhaorong.queoj.support.ErrorCode;
@@ -104,12 +105,12 @@ public class DefaultTokenManager implements TokenManager {
 
     @Override
     public TokenObject refresh(String refreshToken) {
-        Object o = checkAuthorizationImpl(refreshToken,0,null,false);
-        if(o instanceof ErrorCode){
+        CheckResult result = checkAuthorizationImpl(refreshToken,0,null,false);
+        if(!result.isSuccess()){
             log.debug("refresh failed");
             return null;
         }
-        SimpleUser user = (SimpleUser)o;
+        SimpleUser user = result.getUser();
         user.setCount(user.getCount()+1);
         if(user.getCount()>MAX_COUNT){
             log.debug("over the max refresh times");
@@ -120,19 +121,18 @@ public class DefaultTokenManager implements TokenManager {
     }
 
     @Override
-    public ErrorCode checkAuthorization(String accessToken, int role, String addr) {
-        Object o = checkAuthorizationImpl(accessToken,role,addr,true);
-        if(o instanceof ErrorCode){
-            return (ErrorCode) o;
-        }
-        return null;
+    public CheckResult checkAuthorization(String accessToken, int role, String addr) {
+        return checkAuthorizationImpl(accessToken,role,addr,true);
     }
 
-    private Object checkAuthorizationImpl(String authorization, int role, String addr, boolean isAccess){
+    private CheckResult checkAuthorizationImpl(String authorization, int role, String addr, boolean isAccess){
+        CheckResult result = new CheckResult();
+        result.setSuccess(false);
 
         //token是否为空
         if(authorization==null) {
-            return TokenErrorCode.DID_NOT_LOGIN;
+            result.setErrorCode(TokenErrorCode.DID_NOT_LOGIN);
+            return result;
         }
 
         //获取token解析结果
@@ -140,30 +140,38 @@ public class DefaultTokenManager implements TokenManager {
         user = analysisToken(authorization,isAccess);
 
         if(user==null) {
-            return TokenErrorCode.WRONG_TOKEN;
+            result.setErrorCode(TokenErrorCode.WRONG_TOKEN);
+            return result;
         }
 
         //令牌需要刷新
         if(user.getCount()==-1) {
-            return TokenErrorCode.NEED_REFRESH;
+            result.setErrorCode(TokenErrorCode.NEED_REFRESH);
+            return result;
         }
 
         //需要重新登录
         if(user.getCount()== DefaultTokenManager.MAX_COUNT) {
-            return TokenErrorCode.NEED_LOGIN;
+            result.setErrorCode(TokenErrorCode.NEED_LOGIN);
+            return result;
         }
 
         if(isAccess){
             //检查地址是否一致
             if(!addr.equals(user.getAddr())) {
-                return TokenErrorCode.WRONG_ADDR;
+                result.setErrorCode(TokenErrorCode.WRONG_ADDR);
+                return result;
             }
 
             //检查接口权限
             if (user.getRole()<role) {
-                return TokenErrorCode.INSUFFICIENT_AUTHORITY;
+                result.setErrorCode(TokenErrorCode.INSUFFICIENT_AUTHORITY);
+                return result;
             }
         }
-        return user;
+
+        result.setSuccess(true);
+        result.setUser(user);
+        return result;
     }
 }

@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 在controller方法上添加此注解，代表需要身份验证
+ * 身份验证后，会在request中存放userId
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,4 +17,6 @@ public @interface Authorization {
      * @return
      */
     public int value() default 1;
+
+    public static String USERID_ATTR = "reqUserId";
 }
