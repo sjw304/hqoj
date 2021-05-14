@@ -24,15 +24,15 @@ spring:
 mybatis-plus:
   config-location: classpath:/mybatis-config.xml
   mapper-locations: classpath:/mappers/*.xml
-  type-enums-package: xyz.lizhaorong.queoj.enums
+  type-enums-package: top.quezr.hqoj.enums
 logging:
   level:
-    xyz:
-      lizhaorong: debug
+    top:
+      quezr: debug
 
 server:
   servlet:
-    context-path: /queoj
+    context-path: /hqoj
   port: 8989
 
 
