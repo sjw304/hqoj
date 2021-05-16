@@ -3,17 +3,19 @@ package top.quezr.hqoj.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import springfox.documentation.annotations.ApiIgnore;
+import top.quezr.hqoj.controller.dto.ChangePasswordDto;
 import top.quezr.hqoj.controller.dto.LoginResult;
 import top.quezr.hqoj.entity.Result;
 import top.quezr.hqoj.entity.User;
+import top.quezr.hqoj.security.token.entity.TokenObject;
+import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.UserService;
 import top.quezr.hqoj.support.Response;
-import top.quezr.hqoj.controller.dto.RegisterUserDto;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,21 +35,17 @@ public class UserController extends BaseController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/login")
-    public Response<LoginResult> login(String email, String password, HttpServletRequest request){
-        log.info("user {} login .",email);
-        Result<LoginResult> result = userService.login(email, password, request);
+    @PostMapping("/login/password")
+    @ApiOperation("使用密码登录")
+    public Response<LoginResult> loginByPassword(String email, String password, HttpServletRequest request){
+        Result<LoginResult> result = userService.loginByPassword(email, password, request);
         return returnResult(result);
     }
 
-    @PostMapping("/register")
-    @ApiOperation(value = "注册",notes = "注意是put方法。同一邮箱不能重复注册。注册时务必携带之前的8位验证码")
-    public Response<Void> register(@Validated RegisterUserDto registerUserDto){
-        String code = registerUserDto.getCode();
-        User u =  new User();
-        BeanUtils.copyProperties(registerUserDto,u);
-
-        Result<Void> result = userService.register(u, code);
+    @PostMapping("/login/code")
+    @ApiOperation("使用验证码登录")
+    public Response<LoginResult> loginByCode(String email, String code, HttpServletRequest request){
+        Result<LoginResult> result = userService.loginByCode(email, code, request);
         return returnResult(result);
     }
 
@@ -58,4 +56,19 @@ public class UserController extends BaseController {
         return returnResult(result);
     }
 
+    @PostMapping("/password")
+    @ApiOperation("修改密码")
+    @Authorization
+    public Response<Void> changePassword(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId
+                                         , @Validated ChangePasswordDto changePasswordDto){
+        log.info("user {} changed password.",userId);
+        Result<Void> result = userService.changePassword(userId, changePasswordDto.getOldPassword(), changePasswordDto.getNewPassword());
+        return returnResult(result);
+    }
+
+    @PostMapping("/refresh")
+    public Response<TokenObject> refresh(String token){
+        Result<TokenObject> result = userService.refreshTokens(token);
+        return returnResult(result);
+    }
 }

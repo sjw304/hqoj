@@ -4,6 +4,7 @@ import top.quezr.hqoj.controller.dto.LoginResult;
 import top.quezr.hqoj.entity.Result;
 import top.quezr.hqoj.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.quezr.hqoj.security.token.entity.TokenObject;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,11 +18,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface UserService extends IService<User> {
 
-    Result<LoginResult> login(String email, String password, HttpServletRequest request);
+    Result<LoginResult> loginByPassword(String email, String password, HttpServletRequest request);
 
-    boolean existsByEmail(String email);
-
-    Result<Void> register(User u, String code);
+    Result<LoginResult> loginByCode(String email, String code, HttpServletRequest request);
 
     Result<User> getUserInfo(Integer userId);
+
+    Result<Void> changePassword(Integer userId,String oldPassword,String newPassword);
+
+    Result<TokenObject> refreshTokens(String token);
 }

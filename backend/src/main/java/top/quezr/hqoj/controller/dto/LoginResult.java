@@ -23,4 +23,7 @@ public class LoginResult {
     @ApiModelProperty("token组")
     private TokenObject tokens;
 
+    @ApiModelProperty("是否为新用户")
+    private Boolean isNewUser = false;
+
 }

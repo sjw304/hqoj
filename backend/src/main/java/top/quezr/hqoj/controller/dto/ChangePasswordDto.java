@@ -17,20 +17,14 @@ import java.util.Date;
 @Data
 @ToString
 @ApiModel
-public class RegisterUserDto {
+public class ChangePasswordDto {
 
     @NotBlank
     @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$",message = "密码至少包含 数字和英文，长度6-20")
-    @ApiModelProperty("密码至少包含 数字和英文，长度6-20")
-    private String password;
+    @ApiModelProperty("新密码至少包含 数字和英文，长度6-20")
+    private String newPassword;
 
-    @Email
-    @NotBlank
-    @ApiModelProperty("邮箱地址")
-    private String email;
-
-    @NotBlank
-    @ApiModelProperty("邮箱验证通过后的8位码")
-    private String code;
+    @ApiModelProperty("旧密码")
+    private String oldPassword;
 
 }

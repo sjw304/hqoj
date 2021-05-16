@@ -8,10 +8,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import top.quezr.hqoj.security.token.entity.CheckResult;
-import top.quezr.hqoj.security.token.entity.SimpleUser;
-import top.quezr.hqoj.security.token.entity.TokenObject;
-import top.quezr.hqoj.security.token.entity.TokenErrorCode;
+import top.quezr.hqoj.security.token.entity.*;
 
 import java.util.*;
 
@@ -78,10 +75,10 @@ public class DefaultTokenManager implements TokenManager {
             Date date;
             Algorithm algorithm ;
             if(isAccess){
-                date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
+                date = new Date(System.currentTimeMillis()+EXPIRE_TIME+(int)(Math.random()*10000));
                 algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             }else{
-                date = new Date(System.currentTimeMillis()+REFRESH_EXPIRE_TIME);
+                date = new Date(System.currentTimeMillis()+REFRESH_EXPIRE_TIME+(int)(Math.random()*10000));
                 algorithm = Algorithm.HMAC256(REFRESH_TOKEN_SECRET);
             }
             Map<String, Object> header = new HashMap<>();
@@ -103,19 +100,24 @@ public class DefaultTokenManager implements TokenManager {
     }
 
     @Override
-    public TokenObject refresh(String refreshToken) {
+    public RefreshResult refresh(String refreshToken) {
+        RefreshResult refreshResult = new RefreshResult();
         CheckResult result = checkAuthorizationImpl(refreshToken,0,null,false);
         if(!result.isSuccess()){
-            log.debug("refresh failed");
-            return null;
+            refreshResult.setSuccess(false);
+            refreshResult.setMessage("解析token失败");
+            return refreshResult;
         }
         SimpleUser user = result.getUser();
         user.setCount(user.getCount()+1);
         if(user.getCount()>MAX_COUNT){
-            log.debug("over the max refresh times");
-            return null;
+            refreshResult.setSuccess(false);
+            refreshResult.setMessage("达到刷新上限");
+            return refreshResult;
         }
-        return new TokenObject(generateAToken(user,true),generateAToken(user,false));
+        refreshResult.setSuccess(true);
+        refreshResult.setData(new TokenObject(generateAToken(user,true),generateAToken(user,false)));
+        return refreshResult;
 
     }
 

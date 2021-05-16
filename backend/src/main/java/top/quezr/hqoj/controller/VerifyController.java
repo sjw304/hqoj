@@ -28,9 +28,6 @@ import javax.validation.constraints.NotBlank;
 public class VerifyController extends BaseController{
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private VerifyEmailService verifyEmailService;
 
     @PutMapping("/email")
@@ -39,24 +36,12 @@ public class VerifyController extends BaseController{
     public Response<Void> verifyEmail(@Validated @Email @NotBlank String email){
         Response<Void> response = new Response<>();
 
-        boolean exists = userService.existsByEmail(email);
-        if (exists){
-            return response.failure("该email已注册！");
-        }
-
         boolean result = verifyEmailService.generateCodeAndSendEmail(email);
         if (result){
             return response.success();
         }
 
         return response.failure("发送email失败，请稍后重试");
-    }
-
-    @PostMapping("/email")
-    @ApiOperation(value = "检查验证码是否正确",notes = "提交之后将不能再次提交。成功后将返回一个新的8位验证码，之后调用下一步注册请求需要用到该验证码")
-    public Response<String> verify(@Validated VerifyDto verifyDto){
-        Result<String> result = verifyEmailService.verifyEmailWithCode(verifyDto.getEmail(), verifyDto.getVerifyCode());
-        return returnResult(result);
     }
 
 }

@@ -9,11 +9,17 @@ import top.quezr.hqoj.entity.Result;
  */
 public interface VerifyEmailService {
 
+    String SEND_CODE_PREFIX = "email_sended:";
+    // 一分钟服务调用限制时间
+    int SEND_CODE_EXPIRE = 59;
+
+
+    String CODE_PREFIX = "email_verify_code:";
+    // 五分钟验证码过期时间
+    int CODE_EXPIRE = 60*5;
+
     boolean generateCodeAndSendEmail(String address);
 
-    boolean isVerifyPassed(String emailAddress,String code);
-
-    void removeVerifyPass(String emailAddress);
 
     Result<String> verifyEmailWithCode(String email, String verifyCode);
 }
