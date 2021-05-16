@@ -23,4 +23,16 @@
         </if>
         #{pageSize}
     </select>
+    <select id="getProblemListTotalCount" resultType="java.lang.Integer">
+        select count(*) as totalCount
+        from problem
+        <where>
+            <if test="level!=null">
+                level = #{level}
+            </if>
+            <if  test="tagSearch!=null">
+                AND json_contains(tags->"$", '${tagSearch}')
+            </if>
+        </where>
+    </select>
 </mapper>

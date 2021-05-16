@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import top.quezr.hqoj.config.SmtpConfig;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 @SpringBootTest
@@ -24,7 +25,7 @@ class HqojApplicationTests {
 
     public static void main(String[] args) {
         //System.out.println(SecureUtil.md5("123456"));
-        Integer[] arr = {1,2,3};
-        System.out.println(Arrays.toString(arr));
+        LocalDate today = LocalDate.now();
+        System.out.println(today);
     }
 }

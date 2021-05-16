@@ -37,8 +37,8 @@ public class ProblemController extends BaseController {
 
     @GetMapping
     @ApiOperation(value = "getProblemList",notes = "获取题目列表（分页）,只会返回如下字段：id, name, point, level, tags, `like`, unlike")
-    public Response<List<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo pageInfo){
-        Result<List<Problem>> res = problemService.getProblemList(tags, searchVal, level, pageInfo);
+    public Response<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
+        Result<PageInfo<Problem>> res = problemService.getProblemList(tags, searchVal, level, pageInfo);
         return returnResult(res);
     }
 

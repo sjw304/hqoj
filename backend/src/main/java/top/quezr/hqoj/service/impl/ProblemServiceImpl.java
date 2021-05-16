@@ -41,8 +41,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     }
 
     @Override
-    public Result<List<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo pageInfo) {
-        Result<List<Problem>> result = new Result<>();
+    public Result<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo) {
+        Result<PageInfo<Problem>> result = new Result<>();
         pageInfo = PageInfo.normalizing(pageInfo);
 
         String tagSearch = null;
@@ -51,7 +51,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }
         if (StrUtil.isBlank(searchVal)){
             List<Problem> list = baseMapper.getProblemList(tagSearch,level,pageInfo.getPageSize(),pageInfo.getPageNumber(),pageInfo.getLastId());
-            result.setData(list);
+            Integer count = baseMapper.getProblemListTotalCount(tagSearch,level);
+            pageInfo.setData(list);
+            pageInfo.setTotalCount(count);
+            result.setData(pageInfo);
         }else {
             List<Problem> list = getProblemListInEs(tags,searchVal,level,pageInfo);
         }
@@ -106,7 +109,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
      * @param pageInfo NOT_NULL
      * @return
      */
-    private List<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo pageInfo){
+    private List<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
         return null;
     }
 }

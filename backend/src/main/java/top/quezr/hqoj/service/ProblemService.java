@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface ProblemService extends IService<Problem> {
 
-    Result<List<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo pageSize);
+    Result<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageSize);
 
     Result<Problem> getProblemById(Integer id);
 

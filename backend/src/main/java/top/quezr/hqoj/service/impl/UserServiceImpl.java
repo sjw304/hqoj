@@ -2,6 +2,8 @@ package top.quezr.hqoj.service.impl;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.google.common.eventbus.Subscribe;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.quezr.hqoj.controller.dto.LoginResult;
 import top.quezr.hqoj.entity.Result;
@@ -14,11 +16,13 @@ import top.quezr.hqoj.service.FavoriteService;
 import top.quezr.hqoj.service.MessageService;
 import top.quezr.hqoj.service.UserService;
 import top.quezr.hqoj.util.event.CenterEventBus;
+import top.quezr.hqoj.util.event.UserLoginEvent;
 import top.quezr.hqoj.util.event.UserRegisterEvent;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import top.quezr.hqoj.service.VerifyEmailService;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
@@ -31,6 +35,7 @@ import java.util.Objects;
  * @since 2021-05-11
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
@@ -44,6 +49,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     FavoriteService favoriteService;
+
+    @PostConstruct
+    private void init(){
+        CenterEventBus.bus.register(this);
+    }
 
     @Override
     public Result<LoginResult> login(String email, String password, HttpServletRequest request) {
@@ -96,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Result<User> getUserInfo(Integer userId) {
         Result<User> result = new Result<>();
         User u = baseMapper.selectById(userId);
-        if (Objects.isNull(u)){
+        if (Objects.isNull(u)) {
             result.setSuccess(false);
             result.setMessage("用户不存在");
             return result;
@@ -104,6 +114,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         u.setPassword(null);
         result.setData(u);
         return result;
+    }
+
+    private void addUserCoin(Integer userId,int coins){
+        baseMapper.updateUserCoins(userId,coins);
+    }
+
+    @Subscribe
+    public void userFirstLogin(UserLoginEvent event){
+        log.info("user {} first login today . ",event.getUserId());
+        addUserCoin(event.getUserId(),1);
     }
 
     private TokenObject generateToken(User u, HttpServletRequest request){
