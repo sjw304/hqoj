@@ -18,5 +18,5 @@ public @interface Authorization {
      */
     public int value() default 1;
 
-    public static String USERID_ATTR = "reqUserId";
+    public static String USERID_ATTR = "session.userId";
 }

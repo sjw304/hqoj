@@ -24,7 +24,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     ObjectMapper mapper = new ObjectMapper();
 
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //如果不是映射到方法直接通过
@@ -33,7 +32,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
         //检查是否需要身份验证
         int atVal = needAuthorization(handler);
-
         CheckResult result;
         // 需要身份验证
         if (atVal >0) {
@@ -45,7 +43,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
             //解析无误
             if(result.isSuccess()) {
-                request.setAttribute(Authorization.USERID_ATTR,result.getUser().getUserId());
+                request.setAttribute(Authorization.USERID_ATTR,Integer.valueOf(result.getUser().getUserId()));
                 return true;
             }
 

@@ -17,4 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/favorite")
 public class FavoriteController extends BaseController {
 
+
+
+
 }

@@ -22,7 +22,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
     List<Problem> getProblemList(@Param("tagSearch") String tagSearch,
                                  @Param("level") Integer level,
                                  @Param("pageSize") Integer pageSize,
-                                 @Param("pageNumber") Integer pageNumber,
+                                 @Param("pageFrom") Integer pageFrom,
                                  @Param("lastId") Integer lastId
     );
 

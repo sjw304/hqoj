@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import top.quezr.hqoj.enums.UserRole;
 
@@ -19,6 +20,7 @@ import top.quezr.hqoj.enums.UserRole;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@ToString
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -50,10 +50,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             tagSearch = Arrays.toString(tags);
         }
         if (StrUtil.isBlank(searchVal)){
-            List<Problem> list = baseMapper.getProblemList(tagSearch,level,pageInfo.getPageSize(),pageInfo.getPageNumber(),pageInfo.getLastId());
-            Integer count = baseMapper.getProblemListTotalCount(tagSearch,level);
+            List<Problem> list = baseMapper.getProblemList(tagSearch,level,pageInfo.getPageSize(),pageInfo.getPageNumber()* pageInfo.getPageSize(),pageInfo.getLastId());
             pageInfo.setData(list);
-            pageInfo.setTotalCount(count);
+            if (pageInfo.getHasCount()){
+                Integer count = baseMapper.getProblemListTotalCount(tagSearch,level);
+                pageInfo.setTotalCount(count);
+            }
             result.setData(pageInfo);
         }else {
             PageInfo<Problem> esPageInfo = getProblemListInEs(tags,searchVal,level,pageInfo);

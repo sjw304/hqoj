@@ -18,8 +18,8 @@
             </if>
         </where>
         limit
-        <if test="lastId==0 and pageNumber!=0">
-            #{pageNumber}*#{pageSize},
+        <if test="lastId==0 and pageFrom!=0">
+            #{pageFrom},
         </if>
         #{pageSize}
     </select>

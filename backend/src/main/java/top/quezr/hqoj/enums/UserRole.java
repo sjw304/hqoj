@@ -9,11 +9,11 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
  */
 public enum UserRole {
     /**
-     * 1 : 管理员
-     * 0 : 普通用户
+     * 2 : 管理员
+     * 1 : 普通用户
      */
-    ADMIN(1,"管理员"),
-    NORMAL(0,"普通用户")
+    ADMIN(2,"管理员"),
+    NORMAL(1,"普通用户")
     ;
     @EnumValue
     private final int code;
