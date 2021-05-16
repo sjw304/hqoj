@@ -56,7 +56,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             pageInfo.setTotalCount(count);
             result.setData(pageInfo);
         }else {
-            List<Problem> list = getProblemListInEs(tags,searchVal,level,pageInfo);
+            PageInfo<Problem> esPageInfo = getProblemListInEs(tags,searchVal,level,pageInfo);
+            result.setData(esPageInfo);
         }
         return result;
     }
@@ -109,7 +110,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
      * @param pageInfo NOT_NULL
      * @return
      */
-    private List<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
+    private PageInfo<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
         return null;
     }
 }
