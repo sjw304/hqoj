@@ -2,7 +2,6 @@ package top.quezr.hqoj.service.impl;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +123,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public Result<User> getUserInfo(String email) {
+        Result<User> result = new Result<>();
+        User u = baseMapper.getUserByEmal(email);
+        if (Objects.isNull(u)) {
+            result.setSuccess(false);
+            result.setMessage("用户不存在");
+            return result;
+        }
+        u.setPassword(null);
+        result.setData(u);
+        return result;
+    }
+
+    @Override
     public Result<Void> changePassword(Integer userId,String oldPassword, String newPassword) {
         Result<Void> result = new Result<>();
         User u = baseMapper.selectById(userId);
@@ -156,6 +169,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return result;
         }
         result.setData(refresh.getData());
+        return result;
+    }
+
+    @Override
+    public Result<Void> updateUserInfo(User u) {
+        Result<Void> result = new Result<>();
+        baseMapper.updateSelective(u);
         return result;
     }
 

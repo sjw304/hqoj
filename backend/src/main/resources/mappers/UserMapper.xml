@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.quezr.hqoj.mapper.UserMapper">
 
+    <update id="updateSelective">
+        update user
+        <set>
+            <if test="u.nickname!=null">
+                nickname=#{u.nickname}
+            </if>
+            <if test="u.favicon!=null">
+                favicon=#{u.favicon}
+            </if>
+            <if test="u.phone!=null">
+                phone=#{u.phone}
+            </if>
+            <if test="u.introduction!=null">
+                introduction=#{u.introduction}
+            </if>
+            <if test="u.github!=null">
+                github=#{u.github}
+            </if>
+            <if test="u.website!=null">
+                website=#{u.website}
+            </if>
+            <if test="u.wechat!=null">
+                wechat=#{u.wechat}
+            </if>
+        </set>
+        where id=#{u.id}
+    </update>
 </mapper>

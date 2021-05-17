@@ -1,6 +1,7 @@
 package top.quezr.hqoj.controller;
 
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +30,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @RequestMapping("/message")
 @Slf4j
+@Api(tags = "消息服务 Message")
 public class MessageController extends BaseController {
 
     @Autowired

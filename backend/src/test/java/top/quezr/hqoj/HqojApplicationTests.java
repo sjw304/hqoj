@@ -1,5 +1,6 @@
 package top.quezr.hqoj;
 
+import cn.hutool.core.lang.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +25,6 @@ class HqojApplicationTests {
     }
 
     public static void main(String[] args) {
-        //System.out.println(SecureUtil.md5("123456"));
-        LocalDate today = LocalDate.now();
-        System.out.println(today);
+        System.out.println(Validator.isMobile("1883519408"));
     }
 }

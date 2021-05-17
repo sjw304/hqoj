@@ -28,4 +28,6 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Update("update user set coins=coins+#{coins} where id=#{id}")
     void updateUserCoins(@Param("id") Integer userId, @Param("coins") int coins);
+
+    void updateSelective(@Param("u") User u);
 }

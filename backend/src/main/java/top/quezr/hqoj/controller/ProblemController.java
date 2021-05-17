@@ -29,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/problem")
 @Slf4j
-@Api(tags = "题目信息")
+@Api(tags = "题目服务 Problem")
 public class ProblemController extends BaseController {
 
     @Autowired

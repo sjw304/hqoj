@@ -54,7 +54,7 @@ public class UserLoginServiceImpl extends ServiceImpl<UserLoginMapper, UserLogin
 
         redisTemplate.opsForValue().set(key,"1",1, TimeUnit.DAYS);
         CenterEventBus.bus.post(new UserLoginEvent(userId));
-
+        baseMapper.insert(new UserLogin(userId,LocalDateTime.now()));
         return result;
     }
 }

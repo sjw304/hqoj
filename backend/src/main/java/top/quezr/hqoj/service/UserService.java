@@ -24,7 +24,11 @@ public interface UserService extends IService<User> {
 
     Result<User> getUserInfo(Integer userId);
 
+    Result<User> getUserInfo(String email);
+
     Result<Void> changePassword(Integer userId,String oldPassword,String newPassword);
 
     Result<TokenObject> refreshTokens(String token);
+
+    Result<Void> updateUserInfo(User u);
 }
