@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.quezr.hqoj.controller.dto.VerifyDto;
-import top.quezr.hqoj.entity.Result;
-import top.quezr.hqoj.service.UserService;
 import top.quezr.hqoj.service.VerifyEmailService;
 import top.quezr.hqoj.support.Response;
 

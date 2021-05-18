@@ -1,6 +1,6 @@
 package top.quezr.hqoj.controller;
 
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.support.Response;
 
 /**

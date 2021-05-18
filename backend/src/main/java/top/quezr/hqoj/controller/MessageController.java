@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.entity.Message;
-import top.quezr.hqoj.entity.PageInfo;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.PageInfo;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.MessageService;
 import top.quezr.hqoj.support.Response;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 

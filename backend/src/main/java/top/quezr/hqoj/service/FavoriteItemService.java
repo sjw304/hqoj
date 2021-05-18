@@ -2,7 +2,7 @@ package top.quezr.hqoj.service;
 
 import top.quezr.hqoj.entity.FavoriteItem;
 import com.baomidou.mybatisplus.extension.service.IService;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package top.quezr.hqoj.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.UserLogin;
 import top.quezr.hqoj.mapper.UserLoginMapper;
 import top.quezr.hqoj.service.UserLoginService;
@@ -14,9 +14,7 @@ import top.quezr.hqoj.util.event.UserLoginEvent;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**

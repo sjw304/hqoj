@@ -1,10 +1,8 @@
 package top.quezr.hqoj.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +11,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.controller.dto.AddFavoriteItemDto;
 import top.quezr.hqoj.entity.Favorite;
 import top.quezr.hqoj.entity.FavoriteItem;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.FavoriteItemService;
 import top.quezr.hqoj.service.FavoriteService;

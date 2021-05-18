@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import top.quezr.hqoj.entity.PageInfo;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.service.ProblemService;
 import top.quezr.hqoj.support.Response;
 

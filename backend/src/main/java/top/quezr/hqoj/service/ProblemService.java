@@ -1,8 +1,8 @@
 package top.quezr.hqoj.service;
 
-import top.quezr.hqoj.entity.PageInfo;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

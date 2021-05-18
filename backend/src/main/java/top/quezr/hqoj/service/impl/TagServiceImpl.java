@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.Tag;
 import top.quezr.hqoj.mapper.TagMapper;
 import top.quezr.hqoj.service.TagService;

@@ -5,7 +5,7 @@ import org.apache.commons.mail.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.service.EmailService;
 import top.quezr.hqoj.service.VerifyEmailService;
 import top.quezr.hqoj.util.VeryCodeUtil;

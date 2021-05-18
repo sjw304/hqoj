@@ -6,7 +6,7 @@ import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.quezr.hqoj.controller.dto.LoginResult;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.User;
 import top.quezr.hqoj.mapper.UserMapper;
 import top.quezr.hqoj.security.token.TokenManager;

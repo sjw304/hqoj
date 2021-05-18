@@ -1,6 +1,6 @@
 package top.quezr.hqoj.service;
 
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 

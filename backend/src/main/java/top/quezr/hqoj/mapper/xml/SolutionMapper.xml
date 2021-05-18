@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.quezr.hqoj.mapper.SolutionMapper">
 
+    <select id="getSolutionList" resultType="top.quezr.hqoj.entity.Solution">
+        select *
+        from solution
+        where pid=#{problemId}
+        <if  test="tagSearch!=null">
+            and json_contains(tags->"$", '${tagSearch}')
+        </if>
+        <if test="lastId>0">
+            and id > #{lastId}
+        </if>
+        limit
+        <if test="lastId==0 and pageFrom!=0">
+            #{pageFrom},
+        </if>
+        #{pageSize}
+    </select>
+    <select id="getSolutionListTotalCount" resultType="java.lang.Integer">
+        select count(*)
+        from solution
+        where pid=#{problemId}
+        <if  test="tagSearch!=null">
+            and json_contains(tags->"$", '${tagSearch}')
+        </if>
+    </select>
 </mapper>

@@ -1,7 +1,10 @@
 package top.quezr.hqoj.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import top.quezr.hqoj.entity.Solution;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SolutionMapper extends BaseMapper<Solution> {
 
+    List<Solution> getSolutionList(@Param("problemId") Integer problemId,
+                                   @Param("tagSearch") String tagSearch,
+                                   @Param("pageSize") Integer pageSize,
+                                   @Param("pageFrom") Integer pageFrom,
+                                   @Param("lastId") Integer lastId);
+
+    Integer getSolutionListTotalCount(@Param("problemId") Integer problemId, @Param("tagSearch") String tagSearch);
 }

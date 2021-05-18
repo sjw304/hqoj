@@ -1,11 +1,10 @@
 package top.quezr.hqoj.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.quezr.hqoj.entity.Favorite;
 import top.quezr.hqoj.entity.FavoriteItem;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.mapper.FavoriteItemMapper;
 import top.quezr.hqoj.mapper.FavoriteMapper;
 import top.quezr.hqoj.service.FavoriteItemService;

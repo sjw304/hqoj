@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.controller.dto.TagVo;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.Tag;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.TagService;

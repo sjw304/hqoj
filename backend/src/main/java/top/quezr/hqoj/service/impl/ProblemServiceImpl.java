@@ -1,6 +1,9 @@
 package top.quezr.hqoj.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -12,10 +15,10 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import top.quezr.hqoj.dao.esdao.EsProblemDao;
-import top.quezr.hqoj.entity.PageInfo;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
 import top.quezr.hqoj.entity.ProblemSearch;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.mapper.ProblemMapper;
 import top.quezr.hqoj.service.ProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +43,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
 
     private static final String PRO_TIMES_KEY = "proTimes";
     private static final String PRO_REDIS_BREAK = "%%";
+    private static final String PROBLEM_KEY_PREFIX = "pro:";
+
+
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Autowired
@@ -62,6 +71,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if (Objects.nonNull(tags) && tags.length>0){
             tagSearch = Arrays.toString(tags);
         }
+
         if (StrUtil.isBlank(searchVal)){
             List<Problem> list = baseMapper.getProblemList(tagSearch,level,pageInfo.getPageSize(),pageInfo.getPageNumber()* pageInfo.getPageSize(),pageInfo.getLastId());
             pageInfo.setData(list);
@@ -70,10 +80,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 pageInfo.setTotalCount(count);
             }
             result.setData(pageInfo);
-        }else {
-            PageInfo<Problem> esPageInfo = getProblemListInEs(tags,searchVal,level,pageInfo);
-            result.setData(esPageInfo);
+            return result;
         }
+
+        PageInfo<Problem> esPageInfo = getProblemListInEs(tags,searchVal,level,pageInfo);
+        result.setData(esPageInfo);
         return result;
     }
 
@@ -85,11 +96,32 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             result.setMessage("非法id！");
             return result;
         }
-        Problem problem = baseMapper.selectById(id);
-        if (Objects.isNull(problem)){
-            result.setSuccess(false);
-            result.setMessage("该题目不存在！");
-            return result;
+        String problemVal = redisTemplate.opsForValue().get(PROBLEM_KEY_PREFIX+id);
+        Problem  problem;
+        if (Objects.isNull(problemVal)){
+            problem = baseMapper.selectById(id);
+            if (Objects.isNull(problem)){
+                result.setSuccess(false);
+                result.setMessage("该题目不存在！");
+                return result;
+            }
+            try {
+                problemVal = objectMapper.writeValueAsString(problem);
+            } catch (JsonProcessingException e) {
+                result.setSuccess(false);
+                result.setMessage("题目序列化错误！");
+                return result;
+            }
+            log.debug("set problem {} in redis.",id);
+            redisTemplate.opsForValue().set(PROBLEM_KEY_PREFIX+id,problemVal,1, TimeUnit.DAYS);
+        }else {
+            try {
+                problem = objectMapper.readValue(problemVal,Problem.class);
+            } catch (JsonProcessingException e) {
+                result.setSuccess(false);
+                result.setMessage("题目序列化错误！");
+                return result;
+            }
         }
         zSetOps.incrementScore(problem.getName()+PRO_REDIS_BREAK+id,1);
         result.setData(problem);
@@ -118,12 +150,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     }
 
     /**
-     * 通过es搜索
+     * 通过es搜索题目
      * @param tags NULL_ABLE
      * @param searchVal NOT_NULL
      * @param level NULL_ABLE
      * @param pageInfo NOT_NULL
-     * @return
+     * @return pageInfo
      */
     private PageInfo<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
 

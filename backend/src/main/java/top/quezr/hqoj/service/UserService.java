@@ -1,7 +1,7 @@
 package top.quezr.hqoj.service;
 
 import top.quezr.hqoj.controller.dto.LoginResult;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.quezr.hqoj.security.token.entity.TokenObject;

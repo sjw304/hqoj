@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import top.quezr.hqoj.entity.Favorite;
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.mapper.FavoriteMapper;
 import top.quezr.hqoj.service.FavoriteService;
 import top.quezr.hqoj.util.event.CenterEventBus;

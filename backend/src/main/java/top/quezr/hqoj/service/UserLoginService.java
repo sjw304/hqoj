@@ -1,6 +1,6 @@
 package top.quezr.hqoj.service;
 
-import top.quezr.hqoj.entity.Result;
+import top.quezr.hqoj.support.Result;
 
 /**
  * @author que

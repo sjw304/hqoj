@@ -1,4 +1,4 @@
-package top.quezr.hqoj.entity;
+package top.quezr.hqoj.support;
 
 import lombok.Data;
 import lombok.ToString;
