@@ -33,4 +33,6 @@ public interface MessageMapper extends BaseMapper<Message> {
     Integer readMessage(Integer id);
 
     Integer readAllMessage(Integer userId);
+
+    Integer deleteReadMessages(Integer userId);
 }

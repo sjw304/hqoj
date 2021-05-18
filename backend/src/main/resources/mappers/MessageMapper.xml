@@ -3,24 +3,37 @@
 <mapper namespace="top.quezr.hqoj.mapper.MessageMapper">
 
     <insert id="sendMessage">
-        insert into message(type, receiver_id,  title, content)
-        values (#{type},#{receiverId},#{title},#{content})
+        insert into message(type, receiver_id, title, content)
+        values (#{type}, #{receiverId}, #{title}, #{content})
     </insert>
     <update id="readMessage">
-        update message set `read`=1 where id=#{id}
+        update message
+        set `read`=1
+        where id = #{id}
     </update>
     <update id="readAllMessage">
-        update message set `read`=1 where receiver_id=#{userId} and `read`=0
+        update message
+        set `read`=1
+        where receiver_id = #{userId}
+          and `read` = 0
+          and is_deleted = 0
+    </update>
+    <update id="deleteReadMessages">
+        update message
+        set is_deleted=1
+        where receiver_id = #{userId}
+          and `read` = 1
+          and is_deleted = 0;
     </update>
     <select id="selectMessagePage" resultType="top.quezr.hqoj.entity.Message">
         select *
         from message
-        <where>
-            receiver_id=#{userId}
-            <if test="lastId>0">
-                AND id > #{lastId}
-            </if>
-        </where>
+        where
+        receiver_id=#{userId}
+        <if test="lastId>0">
+            AND id > #{lastId}
+        </if>
+        and is_deleted=0
         order by `read`
         limit
         <if test="lastId==0 and pageFrom!=0">
@@ -29,9 +42,12 @@
         #{pageSize}
     </select>
     <select id="selectMessagePageTotalCount" resultType="java.lang.Integer">
-        select count(*) from message where receiver_id=#{userId}
+        select count(*)
+        from message
+        where receiver_id = #{userId}
+          and is_deleted = 0;
     </select>
     <select id="selectExistsNoReadMessage" resultType="java.lang.Integer">
-        select exists(select id from message where receiver_id=#{userId} and `read`=0)
+        select exists(select id from message where receiver_id = #{userId} and `read` = 0 and is_deleted = 0)
     </select>
 </mapper>

@@ -1,6 +1,5 @@
 package top.quezr.hqoj.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import top.quezr.hqoj.entity.Message;
@@ -69,8 +68,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public void readMessage(Integer userId) {
-        baseMapper.readMessage(userId);
+    public void readMessage(Integer id) {
+        baseMapper.readMessage(id);
     }
 
     @Override
@@ -78,8 +77,26 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         baseMapper.readAllMessage(userId);
     }
 
+    @Override
+    public Result<Void> deleteMessage(Integer userId,Integer id) {
+        Result<Void> result = new Result<>();
+        Message message = baseMapper.selectById(id);
+        if (Objects.isNull(message) || Objects.equals(message.getReceiverId(),userId)){
+            result.setSuccess(false);
+            result.setMessage("无权操作该条消息！");
+        }
+        baseMapper.deleteById(id);
+        return result;
+    }
+
+    @Override
+    public Result<Void> deleteReadMessages(Integer userId) {
+        baseMapper.deleteReadMessages(userId);
+        return new Result<>();
+    }
+
     @Subscribe
-    public void sendRegisterMessage(UserRegisterEvent event){
+    private void sendRegisterMessage(UserRegisterEvent event){
         sendMessage(MessageType.SYSTEM_MESSAGE,event.getUser().getId(),REGISTER_SUCCESS_TITLE,REGISTER_SUCCESS_CONTENT);
     }
 }

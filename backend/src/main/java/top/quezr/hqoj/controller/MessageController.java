@@ -58,8 +58,7 @@ public class MessageController extends BaseController {
 
     @PutMapping("/read/{id}")
     @Authorization
-    public Response<Void> readMessage(@PathVariable("id") Integer id, HttpServletRequest request){
-        log.info("login userId : {}",request.getAttribute(Authorization.USERID_ATTR));
+    public Response<Void> readMessage(@PathVariable("id") Integer id){
         messageService.readMessage(id);
         return Response.staticSuccess();
     }
@@ -70,6 +69,20 @@ public class MessageController extends BaseController {
         log.info("user {} read all messages .",userId);
         messageService.readAllMessage(userId);
         return Response.staticSuccess();
+    }
+
+    @DeleteMapping("/{id}")
+    @Authorization
+    public Response<Void> deleteMessage(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId,@PathVariable("id") @Validated @Min(0) @NotNull Integer id){
+        Result<Void> result = messageService.deleteMessage(userId,id);
+        return returnResult(result);
+    }
+
+    @DeleteMapping
+    @Authorization
+    public Response<Void> deleteReadMessages(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
+        Result<Void> result = messageService.deleteReadMessages(userId);
+        return returnResult(result);
     }
 
 }
