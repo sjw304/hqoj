@@ -23,7 +23,7 @@ import javax.validation.constraints.NotBlank;
  */
 @RestController
 @RequestMapping("/verify")
-@Api(tags = "验证服务")
+@Api(tags = "验证服务 Verify")
 @Slf4j
 public class VerifyController extends BaseController{
 

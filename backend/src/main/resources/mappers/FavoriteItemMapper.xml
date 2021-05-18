@@ -2,4 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.quezr.hqoj.mapper.FavoriteItemMapper">
 
+    <select id="getFavoriteItems" resultType="top.quezr.hqoj.entity.FavoriteItem">
+        select *,if(type=0,(select name from problem where problem.id=favorite_item.item_id),(select title from solution where solution.id=favorite_item.item_id)) as item_title
+        from favorite_item
+        where favrites_id=#{favoriteId}
+    </select>
 </mapper>

@@ -2,6 +2,9 @@ package top.quezr.hqoj.service;
 
 import top.quezr.hqoj.entity.FavoriteItem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.quezr.hqoj.entity.Result;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FavoriteItemService extends IService<FavoriteItem> {
 
+    Result<List<FavoriteItem>> getFavoriteItems(Integer favoriteId);
+
+    Result<Void> addFavoriteItem(Integer userId, FavoriteItem item);
+
+    Result<Void> removeFavoriteItem(Integer userId, Integer itemId);
 }

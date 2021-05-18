@@ -30,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/tag")
-@Api(tags = "标签信息")
+@Api(tags = "标签服务 Tag")
 @Slf4j
 public class TagController extends BaseController {
 

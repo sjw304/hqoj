@@ -1,5 +1,6 @@
 package top.quezr.hqoj.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import top.quezr.hqoj.entity.Favorite;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FavoriteMapper extends BaseMapper<Favorite> {
 
+    void updateFavoriteName(@Param("favoriteId") Integer favoriteId,@Param("name") String name);
 }

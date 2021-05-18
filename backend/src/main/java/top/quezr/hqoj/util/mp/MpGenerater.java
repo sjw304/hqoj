@@ -36,10 +36,10 @@ public class MpGenerater {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/queoj?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai");
+        dsc.setUrl("jdbc:mysql://ssacgn.online:3306/queoj?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("queue-lzr54545");
+        dsc.setPassword("o@S$9i3r6V");
         dsc.setDbType(DbType.MYSQL);
         mpg.setDataSource(dsc);
 
@@ -65,8 +65,7 @@ public class MpGenerater {
 
         // 写于父类中的公共字段
         strategy.setInclude(
-                "record",
-                "solution"
+                "like_event"
         );
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);

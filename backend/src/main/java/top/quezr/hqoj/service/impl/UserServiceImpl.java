@@ -21,6 +21,7 @@ import top.quezr.hqoj.util.event.UserLoginEvent;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import top.quezr.hqoj.service.VerifyEmailService;
+import top.quezr.hqoj.util.event.UserRegisterEvent;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (Objects.isNull(u)) {
             baseMapper.register(email, EMPTY_PASSWORD);
             u = baseMapper.getUserByEmal(email);
+            CenterEventBus.bus.post(new UserRegisterEvent(u));
             loginResult.setIsNewUser(true);
         }
 
