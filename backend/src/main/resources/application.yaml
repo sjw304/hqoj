@@ -45,3 +45,9 @@ smtp:
   password: WDCFQFYXWFMCJRPH
   sender-name:  鹊
   username: breadNetwork@126.com
+
+
+elasticsearch:
+  host: ojEs.com
+  port: 9200
+

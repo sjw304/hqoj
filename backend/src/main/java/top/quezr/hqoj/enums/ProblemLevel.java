@@ -22,6 +22,14 @@ public enum ProblemLevel {
         this.desp = desp;
     }
 
+    public static ProblemLevel of(Integer level) {
+        switch (level){
+            case 0:return EASY;
+            case 1:return MEDIUM;
+            default:return HARD;
+        }
+    }
+
     public int getCode() {
         return code;
     }

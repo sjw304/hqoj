@@ -51,5 +51,15 @@ public class Problem implements Serializable {
 
     private Integer spaceLimit;
 
+    public static Problem fromEs(ProblemSearch search){
+        Problem p = new Problem();
+        p.setId(search.getId());
+        p.setName(search.getName());
+        p.setLevel(ProblemLevel.of(search.getLevel()));
+        p.setTags(search.getTags());
+        p.setPoint(search.getPoint());
+        return p;
+    }
+
 
 }
