@@ -44,5 +44,7 @@ public class Solution implements Serializable {
 
     private String content;
 
+    private String summary;
+
 
 }
