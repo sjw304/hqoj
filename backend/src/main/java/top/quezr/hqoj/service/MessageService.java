@@ -29,4 +29,6 @@ public interface MessageService extends IService<Message> {
     Result<Void> deleteMessage(Integer userId,Integer id);
 
     Result<Void> deleteReadMessages(Integer userId);
+
+    void unreadAllMessage(Integer userId);
 }

@@ -1,7 +1,6 @@
 package top.quezr.hqoj.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +40,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> implements ProblemService {
 
-    private static final String PRO_TIMES_KEY = "proTimes";
+    private static final String PRO_TIMES_KEY = "pro:times";
     private static final String PRO_REDIS_BREAK = "%%";
     private static final String PROBLEM_KEY_PREFIX = "pro:";
+    private static final String EMPTY_PROBLEM_VALUE = "emp";
+    private static final String PRO_LIST_KEY = "pro:f:list";
+    private static final String PRO_LIST_COUNT_KEY = "pro:f:count";
 
-
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
+    /**
+     * jackson 序列化工具
+     */
+    private ObjectMapper objectMapper;
 
     @Autowired
     private EsProblemDao esProblemDao;
@@ -60,6 +62,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @PostConstruct
     public void init() {
         zSetOps = redisTemplate.boundZSetOps(PRO_TIMES_KEY);
+        objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -71,8 +74,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if (Objects.nonNull(tags) && tags.length>0){
             tagSearch = Arrays.toString(tags);
         }
-
         if (StrUtil.isBlank(searchVal)){
+            // 首页，使用redis缓存
+            if (Objects.isNull(level) && Objects.isNull(tagSearch) && PageInfo.isFirstPage(pageInfo)){
+                PageInfo<Problem> data = getFirstPage(pageInfo);
+                result.setData(data);
+                return result;
+            }
+
             List<Problem> list = baseMapper.getProblemList(tagSearch,level,pageInfo.getPageSize(),pageInfo.getPageNumber()* pageInfo.getPageSize(),pageInfo.getLastId());
             pageInfo.setData(list);
             if (pageInfo.getHasCount()){
@@ -96,33 +105,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             result.setMessage("非法id！");
             return result;
         }
-        String problemVal = redisTemplate.opsForValue().get(PROBLEM_KEY_PREFIX+id);
-        Problem  problem;
-        if (Objects.isNull(problemVal)){
-            problem = baseMapper.selectById(id);
-            if (Objects.isNull(problem)){
-                result.setSuccess(false);
-                result.setMessage("该题目不存在！");
-                return result;
-            }
-            try {
-                problemVal = objectMapper.writeValueAsString(problem);
-            } catch (JsonProcessingException e) {
-                result.setSuccess(false);
-                result.setMessage("题目序列化错误！");
-                return result;
-            }
-            log.debug("set problem {} in redis.",id);
-            redisTemplate.opsForValue().set(PROBLEM_KEY_PREFIX+id,problemVal,1, TimeUnit.DAYS);
-        }else {
-            try {
-                problem = objectMapper.readValue(problemVal,Problem.class);
-            } catch (JsonProcessingException e) {
-                result.setSuccess(false);
-                result.setMessage("题目序列化错误！");
-                return result;
-            }
+
+        Problem problem = getFromRedisOrMysql(id);
+        if (Objects.isNull(problem)){
+            result.setSuccess(false);
+            result.setMessage("该题目不存在！");
+            return result;
         }
+
         zSetOps.incrementScore(problem.getName()+PRO_REDIS_BREAK+id,1);
         result.setData(problem);
         return result;
@@ -210,5 +200,88 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         pageInfo.setData(data);
 
         return pageInfo;
+    }
+
+    /**
+     * 将数据缓存在redis
+     * @param id
+     * @return
+     */
+    private Problem getFromRedisOrMysql(Integer id){
+        // 从redis获取数据
+        String problemVal = redisTemplate.opsForValue().get(PROBLEM_KEY_PREFIX+id);
+        Problem  problem;
+        // 如果redis中为空
+        if (Objects.isNull(problemVal)){
+            // 从数据库中查数据
+            problem = baseMapper.selectById(id);
+            problemVal = transformProblemToJson(problem);
+            log.debug("set problem {} values {} in redis.",id,problemVal);
+            // 将题目信息暂存到redis
+            redisTemplate.opsForValue().set(PROBLEM_KEY_PREFIX+id,problemVal,20, TimeUnit.MINUTES);
+        }else {
+            problem = transformJsonToProblem(problemVal);
+        }
+        return problem;
+    }
+
+    private PageInfo<Problem> getFirstPage(PageInfo<Problem> pageInfo) {
+        // 从redis获取首屏数据
+        List<String> list = redisTemplate.opsForList().range(PRO_LIST_KEY, 0, pageInfo.getPageSize());
+        // 防止list为空
+        list = Objects.isNull(list)?new ArrayList<>():list;
+        int size = list.size();
+        List<Problem> afterProblemList = null;
+        // redis中数据不足
+        if (size < pageInfo.getPageSize()){
+            afterProblemList = baseMapper.getProblemList(null, null, pageInfo.getPageSize() - size, size, 0);
+            List<String> problemVals = afterProblemList.stream().map(this::transformProblemToJson).collect(Collectors.toList());
+            redisTemplate.opsForList().rightPushAll(PRO_LIST_KEY,problemVals);
+        }
+
+        List<Problem> problemList = list.stream().map(this::transformJsonToProblem).collect(Collectors.toList());
+        if (Objects.nonNull(afterProblemList)){
+            problemList.addAll(afterProblemList);
+        }
+
+        if (pageInfo.getHasCount()){
+            Integer count;
+            String countVal = redisTemplate.opsForValue().get(PRO_LIST_COUNT_KEY);
+            if (Objects.isNull(countVal)){
+                count = baseMapper.getProblemListTotalCount(null,null);
+                redisTemplate.opsForValue().set(PRO_LIST_COUNT_KEY,String.valueOf(count));
+            }else {
+                count = Integer.valueOf(countVal);
+            }
+            pageInfo.setTotalCount(count);
+        }
+
+        return pageInfo;
+    }
+
+    private String transformProblemToJson(Problem p){
+        if (Objects.isNull(p)){
+            return EMPTY_PROBLEM_VALUE;
+        }
+        try {
+            return objectMapper.writeValueAsString(p);
+        } catch (JsonProcessingException e) {
+            log.error("[ getFromRedisOrMysql ] error in parse to json");
+            return EMPTY_PROBLEM_VALUE;
+        }
+    }
+
+    private Problem transformJsonToProblem(String problemVal){
+        // 如果题目信息为默认空串
+        if (EMPTY_PROBLEM_VALUE.equals(problemVal)){
+            return  null;
+        }else {
+            try {
+                return objectMapper.readValue(problemVal,Problem.class);
+            } catch (JsonProcessingException e) {
+                log.error("[ getFromRedisOrMysql ] error in parse from json");
+                return null;
+            }
+        }
     }
 }

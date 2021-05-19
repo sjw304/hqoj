@@ -2,10 +2,7 @@ package top.quezr.hqoj.support;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -43,6 +40,8 @@ public class PageInfo<T> {
     public static final Integer DEFAULT_LAST_ID = 0;
     public static final Integer DEFAULT_TOTAL_COUNT = 0;
     public static final Boolean DEFAULT_HAS_COUNT = false;
+
+    private static final PageInfo<Object> EMPTY_PAGE_INFO = new PageInfo<>(DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER, DEFAULT_LAST_ID, DEFAULT_HAS_COUNT,DEFAULT_TOTAL_COUNT,Collections.emptyList());
 
     /**
      * 返回一个绝对属性正常的pageInfo
@@ -94,5 +93,22 @@ public class PageInfo<T> {
             hasCount = PageInfo.DEFAULT_HAS_COUNT;
         }
         return hasCount;
+    }
+
+    public static boolean isFirstPage(PageInfo pageInfo){
+        return Objects.isNull(pageInfo)||(pageInfo.getPageNumber()==0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PageInfo<?> pageInfo = (PageInfo<?>) o;
+        return Objects.equals(pageSize, pageInfo.pageSize) && Objects.equals(pageNumber, pageInfo.pageNumber) && Objects.equals(lastId, pageInfo.lastId) && Objects.equals(hasCount, pageInfo.hasCount) && Objects.equals(totalCount, pageInfo.totalCount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pageSize, pageNumber, lastId, hasCount, totalCount);
     }
 }

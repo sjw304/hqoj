@@ -78,6 +78,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
+    public void unreadAllMessage(Integer userId) {
+        baseMapper.unreadAllMessage(userId);
+    }
+
+    @Override
     public Result<Void> deleteMessage(Integer userId,Integer id) {
         Result<Void> result = new Result<>();
         Message message = baseMapper.selectById(id);

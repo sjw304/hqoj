@@ -25,6 +25,13 @@
           and `read` = 1
           and is_deleted = 0;
     </update>
+    <update id="unreadAllMessage">
+        update message
+        set `read`=0
+        where receiver_id = #{userId}
+          and `read` = 1
+          and is_deleted = 0
+    </update>
     <select id="selectMessagePage" resultType="top.quezr.hqoj.entity.Message">
         select *
         from message
