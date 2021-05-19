@@ -19,4 +19,6 @@ public interface SolutionService extends IService<Solution> {
     Result<PageInfo<Solution>> getSolutionPage(Integer problemId, Tag[] tags, String searchVal, PageInfo<Solution> pageInfo);
 
     Result<Solution> getSolutionById(Integer id);
+
+    Result<Void> addSolution(Solution solution);
 }

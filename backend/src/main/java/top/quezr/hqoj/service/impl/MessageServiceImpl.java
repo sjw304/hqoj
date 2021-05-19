@@ -8,6 +8,7 @@ import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.enums.MessageType;
 import top.quezr.hqoj.mapper.MessageMapper;
 import top.quezr.hqoj.service.MessageService;
+import top.quezr.hqoj.util.event.AddSolutionEvent;
 import top.quezr.hqoj.util.event.CenterEventBus;
 import top.quezr.hqoj.util.event.UserRegisterEvent;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,6 +32,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     private static final String REGISTER_SUCCESS_TITLE = "欢迎来到hqoj！";
     private static final String REGISTER_SUCCESS_CONTENT = "欢迎您来到hqoj的世界，期待您与我们一起成长！点击题库页面开始你的旅程吧！";
+    private static final String ADD_SOLUTION_TITLE = "发布题解成功！";
+    private static final String ADD_SOLUTION_CONTENT = "您已成功发布题解 《%s》，奖励的硬币将会在几分钟内发到您的账户哦。";
+
 
     @PostConstruct
     private void init(){
@@ -103,5 +107,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Subscribe
     private void sendRegisterMessage(UserRegisterEvent event){
         sendMessage(MessageType.SYSTEM_MESSAGE,event.getUser().getId(),REGISTER_SUCCESS_TITLE,REGISTER_SUCCESS_CONTENT);
+    }
+
+    @Subscribe
+    public void userAddSolution(AddSolutionEvent event){
+        sendMessage(MessageType.SYSTEM_MESSAGE,event.getSolution().getUid(),ADD_SOLUTION_TITLE,String.format(ADD_SOLUTION_CONTENT,event.getSolution().getTitle()));
     }
 }

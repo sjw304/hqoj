@@ -27,7 +27,7 @@ public class MpGenerater {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/src/main/java");
+        gc.setOutputDir(projectPath + "/backend/src/main/java");
         gc.setAuthor("que");
         gc.setOpen(false);
         gc.setFileOverride(true); //重新生成时文件是否覆盖
@@ -65,7 +65,7 @@ public class MpGenerater {
 
         // 写于父类中的公共字段
         strategy.setInclude(
-                "like_event"
+                "add_coin_reason"
         );
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);

@@ -3,18 +3,20 @@ package top.quezr.hqoj.controller;
 
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+import top.quezr.hqoj.controller.dto.WriteSolutionDto;
 import top.quezr.hqoj.entity.Solution;
 import top.quezr.hqoj.entity.Tag;
+import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.SolutionService;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Response;
 import top.quezr.hqoj.support.Result;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,6 +48,22 @@ public class SolutionController extends BaseController {
     public Response<Solution> getSolution(@PathVariable("id") Integer id){
         Result<Solution> solution = solutionService.getSolutionById(id);
         return returnResult(solution);
+    }
+
+    @PutMapping
+    @Authorization
+    public Response<Void> writeSolution(@Validated WriteSolutionDto solutionDto,@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
+        String tagVal = solutionDto.getTags()==null?"[]": Arrays.toString(solutionDto.getTags());
+        Solution solution = new Solution();
+        solution.setContent(solutionDto.getContent());
+        solution.setPid(solutionDto.getPid());
+        solution.setTags(tagVal);
+        solution.setTitle(solutionDto.getTitle());
+        int len = solutionDto.getContent().length();
+        solution.setSummary(solutionDto.getContent().substring(0, Math.min(len, 100)));
+        solution.setUid(userId);
+        Result<Void> result = solutionService.addSolution(solution);
+        return returnResult(result);
     }
 
 }

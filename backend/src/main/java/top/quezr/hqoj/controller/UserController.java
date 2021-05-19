@@ -63,6 +63,7 @@ public class UserController extends BaseController {
 
     @PutMapping("/login/first")
     @ApiOperation("用户每日第一次登陆")
+    @Authorization
     public Response<Void> userFirstLoginToday(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
         Result<Void> result = userLoginService.userFirstLogin(userId);
         return returnResult(result);

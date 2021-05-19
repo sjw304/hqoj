@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Result;
+import top.quezr.hqoj.util.event.AddSolutionEvent;
+import top.quezr.hqoj.util.event.CenterEventBus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +68,13 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         }
         result.setData(solution);
         return result;
+    }
+
+    @Override
+    public Result<Void> addSolution(Solution solution) {
+        baseMapper.insert(solution);
+        CenterEventBus.bus.post(new AddSolutionEvent(solution));
+        return new Result<>();
     }
 
     /**

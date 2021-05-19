@@ -16,6 +16,7 @@ import top.quezr.hqoj.security.token.entity.TokenObject;
 import top.quezr.hqoj.service.FavoriteService;
 import top.quezr.hqoj.service.MessageService;
 import top.quezr.hqoj.service.UserService;
+import top.quezr.hqoj.util.event.AddSolutionEvent;
 import top.quezr.hqoj.util.event.CenterEventBus;
 import top.quezr.hqoj.util.event.UserLoginEvent;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,12 +45,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     VerifyEmailService verifyEmailService;
-
-    @Autowired
-    MessageService messageService;
-
-    @Autowired
-    FavoriteService favoriteService;
 
     private static final String EMPTY_PASSWORD = "lzrnb!!!";
 
@@ -179,16 +174,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Result<Void> result = new Result<>();
         baseMapper.updateSelective(u);
         return result;
-    }
-
-    private void addUserCoin(Integer userId, int coins){
-        baseMapper.updateUserCoins(userId,coins);
-    }
-
-    @Subscribe
-    public void userFirstLogin(UserLoginEvent event){
-        log.info("user {} first login today . ",event.getUserId());
-        addUserCoin(event.getUserId(),1);
     }
 
     private TokenObject generateToken(User u, HttpServletRequest request){
