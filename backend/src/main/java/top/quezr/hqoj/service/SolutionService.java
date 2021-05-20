@@ -16,7 +16,7 @@ import top.quezr.hqoj.support.Result;
  */
 public interface SolutionService extends IService<Solution> {
 
-    Result<PageInfo<Solution>> getSolutionPage(Integer problemId, Tag[] tags, String searchVal, PageInfo<Solution> pageInfo);
+    Result<PageInfo<Solution>> getSolutionPage(Integer problemId, Integer[] tags, String searchVal, PageInfo<Solution> pageInfo);
 
     Result<Solution> getSolutionById(Integer id);
 

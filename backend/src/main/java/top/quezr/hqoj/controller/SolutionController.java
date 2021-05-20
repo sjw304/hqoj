@@ -2,6 +2,7 @@ package top.quezr.hqoj.controller;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class SolutionController extends BaseController {
 
     @GetMapping
     public Response<PageInfo<Solution>> getSolutionPage(Integer problemId,
-                                                        Tag[] tags,
+                                                        Integer[] tags,
                                                         String searchVal,
                                                         PageInfo<Solution> pageInfo){
         Result<PageInfo<Solution>> result = solutionService.getSolutionPage(problemId,tags,searchVal,pageInfo);

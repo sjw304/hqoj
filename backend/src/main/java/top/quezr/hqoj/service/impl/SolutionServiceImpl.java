@@ -33,7 +33,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public Result<PageInfo<Solution>> getSolutionPage(Integer problemId, Tag[] tags, String searchVal, PageInfo<Solution> pageInfo) {
+    public Result<PageInfo<Solution>> getSolutionPage(Integer problemId, Integer[] tags, String searchVal, PageInfo<Solution> pageInfo) {
         Result<PageInfo<Solution>> result = new Result<>();
         pageInfo = PageInfo.normalizing(pageInfo);
 
@@ -85,7 +85,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
      * @param pageInfo NOT_NULL
      * @return pageInfo
      */
-    private PageInfo<Solution> getSolutionListInEs(Integer problemId, Tag[] tags, String searchVal, PageInfo<Solution> pageInfo){
+    private PageInfo<Solution> getSolutionListInEs(Integer problemId, Integer[] tags, String searchVal, PageInfo<Solution> pageInfo){
         return null;
     }
 }
