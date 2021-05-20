@@ -2,8 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.quezr.hqoj.mapper.ProblemMapper">
+    <update id="updateLike">
+        update problem set `like`=`like`+#{num} where id=#{id}
+    </update>
 
-<!--    <cache-ref namespace="top.quezr.hqoj.mapper.ProblemMapper"/>-->
+    <!--    <cache-ref namespace="top.quezr.hqoj.mapper.ProblemMapper"/>-->
 
     <select id="getProblemList" resultType="top.quezr.hqoj.entity.Problem">
         select id, name, point, level, tags, `like`, unlike

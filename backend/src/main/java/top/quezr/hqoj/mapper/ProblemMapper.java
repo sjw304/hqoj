@@ -29,4 +29,6 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     Integer getProblemListTotalCount(@Param("tagSearch") String tagSearch,
                                      @Param("level") Integer level);
+
+    Integer updateLike(@Param("id") Integer id, @Param("num") Integer num);
 }

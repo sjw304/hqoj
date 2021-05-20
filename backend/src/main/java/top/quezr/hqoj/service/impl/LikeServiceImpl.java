@@ -48,6 +48,13 @@ public class LikeServiceImpl extends ServiceImpl<LikeEventMapper, LikeEvent> imp
     @Override
     public Result<Void> saveLikeEvent(LikeEvent event) {
         Result<Void> result = new Result<>();
+
+        if (isLiked(event.getUserId(),event.getItemType(),event.getItemId()).getData()){
+            result.setSuccess(false);
+            result.setMessage("不能重复点赞！");
+            return result;
+        }
+
         CenterEventBus.bus.post(event);
 
         // 将点赞信息放到redis里

@@ -3,6 +3,7 @@ package top.quezr.hqoj.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -13,7 +14,11 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import top.quezr.hqoj.dao.esdao.EsProblemDao;
+import top.quezr.hqoj.entity.LikeEvent;
+import top.quezr.hqoj.enums.ItemType;
+import top.quezr.hqoj.enums.LikeType;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
 import top.quezr.hqoj.entity.ProblemSearch;
@@ -22,6 +27,8 @@ import top.quezr.hqoj.mapper.ProblemMapper;
 import top.quezr.hqoj.service.ProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import top.quezr.hqoj.util.VeryCodeUtil;
+import top.quezr.hqoj.util.event.CenterEventBus;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -46,6 +53,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private static final String EMPTY_PROBLEM_VALUE = "emp";
     private static final String PRO_LIST_KEY = "pro:f:list";
     private static final String PRO_LIST_COUNT_KEY = "pro:f:count";
+    private static final String PROBLEM_LIKE_HASH_KEY = "hash:count:p:";
+    private static final String PROBLEM_LIKE_LOCK_KEY = "lock:count:p:";
 
     /**
      * jackson 序列化工具
@@ -63,6 +72,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     public void init() {
         zSetOps = redisTemplate.boundZSetOps(PRO_TIMES_KEY);
         objectMapper = new ObjectMapper();
+        CenterEventBus.bus.register(this);
     }
 
     @Override
@@ -281,6 +291,48 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             } catch (JsonProcessingException e) {
                 log.error("[ getFromRedisOrMysql ] error in parse from json");
                 return null;
+            }
+        }
+    }
+
+    @Subscribe
+    private void onAddLike(LikeEvent event){
+        if (event.getItemType()!= ItemType.PROBLEM){
+            return;
+        }
+        log.info("received add like . ");
+        redisTemplate.boundHashOps(PROBLEM_LIKE_HASH_KEY)
+                .increment(event.getItemId().toString(),event.getType()== LikeType.LIKE?1:-1);
+    }
+
+    @Scheduled(cron="0/45 * *  * * ? ")
+    public void sync(){
+        log.info("start sync like count to db");
+        String code = VeryCodeUtil.generateCode(8);
+        Boolean res = redisTemplate.opsForValue().setIfAbsent(PROBLEM_LIKE_LOCK_KEY, code, 10, TimeUnit.SECONDS);
+        if (res!=null && res){
+            try{
+                Map<Object, Object> entries = redisTemplate.boundHashOps(PROBLEM_LIKE_HASH_KEY).entries();
+                if (entries==null) {
+                    return;
+                }
+                entries.forEach((k,v)->{
+                    Integer id = Integer.valueOf((String) k);
+                    Integer num = (Integer) v;
+                    if (num!=0){
+                        log.info("sync solution {} add {}",id,num);
+                        baseMapper.updateLike(id,num);
+                        // 不完善，会在redis中留下空洞
+                        redisTemplate.boundHashOps(PROBLEM_LIKE_HASH_KEY).increment(k,-num);
+                        // 有bug，可能会存在并发安全问题
+                        // redisTemplate.boundHashOps(PROBLEM_LIKE_HASH_KEY).delete(k);
+                    }
+                });
+            }finally {
+                // 有bug，可能会存在并发安全问题
+                if (code.equals(redisTemplate.opsForValue().get(PROBLEM_LIKE_LOCK_KEY))){
+                    redisTemplate.delete(PROBLEM_LIKE_LOCK_KEY);
+                }
             }
         }
     }

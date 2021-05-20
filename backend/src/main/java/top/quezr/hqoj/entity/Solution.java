@@ -32,8 +32,6 @@ public class Solution implements Serializable {
 
     private Integer like;
 
-    private Integer unlike;
-
     private LocalDateTime time;
 
     private String userNickName;

@@ -45,8 +45,6 @@ public class Problem implements Serializable {
     @TableField("`like`")
     private Integer like;
 
-    private Integer unlike;
-
     private Integer timeLimit;
 
     private Integer spaceLimit;

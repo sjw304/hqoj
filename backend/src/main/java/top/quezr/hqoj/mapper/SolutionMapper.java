@@ -23,4 +23,6 @@ public interface SolutionMapper extends BaseMapper<Solution> {
                                    @Param("lastId") Integer lastId);
 
     Integer getSolutionListTotalCount(@Param("problemId") Integer problemId, @Param("tagSearch") String tagSearch);
+
+    void updateLike(@Param("id") Integer id, @Param("num") Integer num);
 }
