@@ -7,6 +7,8 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import top.quezr.hqoj.enums.ItemType;
+import top.quezr.hqoj.enums.LikeType;
 
 /**
  * <p>
@@ -26,23 +28,14 @@ public class LikeEvent implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 1 SOLUTION
-        0 PROBLEM
-     */
-    private Integer entityType;
+    private ItemType itemType;
 
     private Integer userId;
 
     private LocalDateTime createTime;
 
-    /**
-     * 0 like
-        1 unlike
-        2 undo_like
-        3 undo_unlike
-     */
-    private Integer type;
+    private LikeType type;
 
+    private Integer itemId;
 
 }

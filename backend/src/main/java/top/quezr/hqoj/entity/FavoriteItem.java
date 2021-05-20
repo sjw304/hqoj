@@ -8,7 +8,7 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import top.quezr.hqoj.enums.FavoriteItemType;
+import top.quezr.hqoj.enums.ItemType;
 
 /**
  * <p>
@@ -28,7 +28,7 @@ public class FavoriteItem implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private FavoriteItemType type;
+    private ItemType type;
 
     /**
      * 收藏夹id

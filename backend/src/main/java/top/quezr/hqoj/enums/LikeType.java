@@ -7,20 +7,20 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
  * @version 1.0
  * @date 2021/5/11 22:01
  */
-public enum FavoriteItemType {
+public enum LikeType {
     /**
      * 2 : 管理员
      * 1 : 普通用户
      */
-    PROBLEM(0,"题目"),
-    SOLUTION(1,"题解")
+    LIKE(0,"点赞"),
+    UNDO_LIKE(1,"取消点赞"),
     ;
     @EnumValue
     private final int code;
     private final String desp;
 
 
-    FavoriteItemType(int code, String desp) {
+    LikeType(int code, String desp) {
         this.code = code;
         this.desp = desp;
     }

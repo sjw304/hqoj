@@ -2,11 +2,10 @@ package top.quezr.hqoj.controller.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.quezr.hqoj.enums.FavoriteItemType;
+import top.quezr.hqoj.enums.ItemType;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 /**
  * @author que
@@ -18,7 +17,7 @@ public class AddFavoriteItemDto {
 
     @ApiModelProperty(value = "收藏项的类型")
     @NotNull
-    private FavoriteItemType type;
+    private ItemType type;
 
     @ApiModelProperty(value = "收藏夹id",example = "1")
     @NotNull
