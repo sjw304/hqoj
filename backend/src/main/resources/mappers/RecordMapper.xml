@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.quezr.hqoj.dao.mapper.RecordMapper">
 
+    <select id="selectStateById" resultType="top.quezr.hqoj.enums.JudgeStauts">
+        select state from record where id=#{id}
+    </select>
 </mapper>

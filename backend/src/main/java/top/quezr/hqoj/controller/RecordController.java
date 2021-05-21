@@ -3,6 +3,7 @@ package top.quezr.hqoj.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.controller.dto.SubmitDto;
 import top.quezr.hqoj.entity.Record;
+import top.quezr.hqoj.enums.JudgeStauts;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.RecordService;
 import top.quezr.hqoj.support.Response;
@@ -41,14 +43,22 @@ public class RecordController extends BaseController {
 
     @PutMapping
     @Authorization
-    @ApiOperation("提交代码")
-    public Response<Void> submit(@Validated SubmitDto submitDto, @RequestAttribute(Authorization.USERID_ATTR)@ApiIgnore Integer userId){
+    @ApiOperation("提交代码，返回提交id")
+    public Response<Integer> submit(@Validated SubmitDto submitDto, @RequestAttribute(Authorization.USERID_ATTR)@ApiIgnore Integer userId){
         Record record = new Record();
         record.setUid(userId);
         record.setCode(submitDto.getCode());
         record.setPid(submitDto.getPid());
         record.setLanguageType(submitDto.getLanguageType());
-        Result<Void> result = recordService.submit(record);
+        record.setState(JudgeStauts.PENDING);
+        Result<Integer> result = recordService.submit(record);
+        return returnResult(result);
+    }
+
+    @GetMapping("/state")
+    @ApiOperation("获取提交状态")
+    public Response<JudgeStauts> getState(Integer id){
+        Result<JudgeStauts> result = recordService.getStateById(id);
         return returnResult(result);
     }
 

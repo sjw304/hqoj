@@ -6,6 +6,8 @@ import top.quezr.hqoj.support.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.quezr.hqoj.enums.MessageType;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -31,4 +33,6 @@ public interface MessageService extends IService<Message> {
     Result<Void> deleteReadMessages(Integer userId);
 
     void unreadAllMessage(Integer userId);
+
+    Result<List<Message>> getAllNoReadMessages(Integer userId);
 }

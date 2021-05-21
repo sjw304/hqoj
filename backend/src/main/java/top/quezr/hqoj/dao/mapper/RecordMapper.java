@@ -2,6 +2,7 @@ package top.quezr.hqoj.dao.mapper;
 
 import top.quezr.hqoj.entity.Record;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import top.quezr.hqoj.enums.JudgeStauts;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RecordMapper extends BaseMapper<Record> {
 
+    JudgeStauts selectStateById(Integer id);
 }

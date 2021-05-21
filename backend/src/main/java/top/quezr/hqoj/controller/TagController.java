@@ -45,6 +45,13 @@ public class TagController extends BaseController {
         return success(tags);
     }
 
+    @GetMapping("/all")
+    @ApiOperation("获取全部tag")
+    public Response<List<Tag>> getAllTags(){
+        List<Tag> tags = tagService.getAllTags();
+        return success(tags);
+    }
+
     @PutMapping
     @Authorization
     @ApiOperation("修改/创建tag")

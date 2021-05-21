@@ -57,4 +57,11 @@
     <select id="selectExistsNoReadMessage" resultType="java.lang.Integer">
         select exists(select id from message where receiver_id = #{userId} and `read` = 0 and is_deleted = 0)
     </select>
+    <select id="selectAllNoReadMessages" resultType="top.quezr.hqoj.entity.Message">
+        select *
+        from message
+        where receiver_id = #{userId}
+          and `read` = 0
+          and is_deleted = 0;
+    </select>
 </mapper>

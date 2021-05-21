@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.entity.DailyProblem;
+import top.quezr.hqoj.enums.ProblemLevel;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.DailyProblemService;
 import top.quezr.hqoj.support.PageInfo;
@@ -41,8 +42,8 @@ public class ProblemController extends BaseController {
 
     @GetMapping
     @ApiOperation(value = "getProblemList",notes = "获取题目列表（分页）,只会返回如下字段：id, name, point, level, tags")
-    public Response<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
-        Result<PageInfo<Problem>> res = problemService.getProblemList(tags, searchVal, level, pageInfo);
+    public Response<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, ProblemLevel level, PageInfo<Problem> pageInfo){
+        Result<PageInfo<Problem>> res = problemService.getProblemList(tags, searchVal, level==null?null:level.getCode(), pageInfo);
         return returnResult(res);
     }
 

@@ -19,4 +19,6 @@ public interface TagService extends IService<Tag> {
     List<Tag> getTagsByIds(Integer[] ids);
 
     Result<Void> setTag(Tag tag);
+
+    List<Tag> getAllTags();
 }

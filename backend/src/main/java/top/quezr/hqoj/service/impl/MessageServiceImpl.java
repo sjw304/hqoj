@@ -87,6 +87,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
+    public Result<List<Message>> getAllNoReadMessages(Integer userId) {
+        Result<List<Message>> result = new Result<>();
+        List<Message> list =  baseMapper.selectAllNoReadMessages(userId);;
+        result.setData(list==null?List.of():list);
+        return result;
+    }
+
+    @Override
     public Result<Void> deleteMessage(Integer userId,Integer id) {
         Result<Void> result = new Result<>();
         Message message = baseMapper.selectById(id);
