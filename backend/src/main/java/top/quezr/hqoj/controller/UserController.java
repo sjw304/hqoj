@@ -71,6 +71,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/info")
     @ApiOperation(value = "获取自己的用户信息")
+    @Authorization
     public Response<User> getMineInfo(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
         Result<User> result = userService.getUserInfo(userId);
         return returnResult(result);
