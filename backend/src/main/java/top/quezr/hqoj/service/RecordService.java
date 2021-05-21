@@ -2,6 +2,7 @@ package top.quezr.hqoj.service;
 
 import top.quezr.hqoj.entity.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.quezr.hqoj.support.Result;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RecordService extends IService<Record> {
 
+    Result<Void> submit(Record record);
 }

@@ -44,5 +44,7 @@ public class Record implements Serializable {
 
     private String code;
 
+    private String log;
+
 
 }

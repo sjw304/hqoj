@@ -5,6 +5,7 @@ import top.quezr.hqoj.dao.mapper.RecordMapper;
 import top.quezr.hqoj.service.RecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import top.quezr.hqoj.support.Result;
 
 /**
  * <p>
@@ -17,4 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> implements RecordService {
 
+    @Override
+    public Result<Void> submit(Record record) {
+        return new Result<>();
+    }
 }

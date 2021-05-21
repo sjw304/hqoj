@@ -9,7 +9,7 @@
     <!--    <cache-ref namespace="top.quezr.hqoj.dao.mapper.ProblemMapper"/>-->
 
     <select id="getProblemList" resultType="top.quezr.hqoj.entity.Problem">
-        select id, name, point, level, tags, `like`, unlike
+        select id, name, point, level, tags
         from problem
         <where>
             <if test="level!=null">
