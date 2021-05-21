@@ -16,7 +16,7 @@ import top.quezr.hqoj.config.SmtpConfig;
 @EnableScheduling
 @EnableCaching
 @EnableConfigurationProperties(SmtpConfig.class)
-@MapperScan("top.quezr.hqoj.mapper")
+@MapperScan("top.quezr.hqoj.dao.mapper")
 public class HqojApplication {
 
     public static void main(String[] args) {

@@ -10,7 +10,7 @@ import top.quezr.hqoj.entity.LikeEvent;
 import top.quezr.hqoj.entity.Solution;
 import top.quezr.hqoj.enums.ItemType;
 import top.quezr.hqoj.enums.LikeType;
-import top.quezr.hqoj.mapper.SolutionMapper;
+import top.quezr.hqoj.dao.mapper.SolutionMapper;
 import top.quezr.hqoj.service.SolutionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -118,9 +118,8 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
                 .increment(event.getItemId().toString(),event.getType()== LikeType.LIKE?1:-1);
     }
 
-    @Scheduled(cron="0/45 * *  * * ? ")
+    @Scheduled(cron="*/60 * *  * * ? ")
     public void sync(){
-        log.info("start sync like count to db");
         String code = VeryCodeUtil.generateCode(8);
         Boolean res = redisTemplate.opsForValue().setIfAbsent(SOLUTION_LIKE_LOCK_KEY, code, 10, TimeUnit.SECONDS);
         if (res!=null && res){

@@ -23,7 +23,7 @@ import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
 import top.quezr.hqoj.entity.ProblemSearch;
 import top.quezr.hqoj.support.Result;
-import top.quezr.hqoj.mapper.ProblemMapper;
+import top.quezr.hqoj.dao.mapper.ProblemMapper;
 import top.quezr.hqoj.service.ProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -305,9 +305,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                 .increment(event.getItemId().toString(),event.getType()== LikeType.LIKE?1:-1);
     }
 
-    @Scheduled(cron="0/45 * *  * * ? ")
+    @Scheduled(cron="*/60 * *  * * ? ")
     public void sync(){
-        log.info("start sync like count to db");
         String code = VeryCodeUtil.generateCode(8);
         Boolean res = redisTemplate.opsForValue().setIfAbsent(PROBLEM_LIKE_LOCK_KEY, code, 10, TimeUnit.SECONDS);
         if (res!=null && res){
@@ -320,7 +319,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
                     Integer id = Integer.valueOf((String) k);
                     Integer num = (Integer) v;
                     if (num!=0){
-                        log.info("sync solution {} add {}",id,num);
+                        log.info("sync problem {} add {}",id,num);
                         baseMapper.updateLike(id,num);
                         // 不完善，会在redis中留下空洞
                         redisTemplate.boundHashOps(PROBLEM_LIKE_HASH_KEY).increment(k,-num);

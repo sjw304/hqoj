@@ -1,4 +1,4 @@
-package top.quezr.hqoj.mapper;
+package top.quezr.hqoj.dao.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;

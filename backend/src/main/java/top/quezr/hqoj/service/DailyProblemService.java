@@ -2,6 +2,9 @@ package top.quezr.hqoj.service;
 
 import top.quezr.hqoj.entity.DailyProblem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.quezr.hqoj.support.Result;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-05-11
  */
 public interface DailyProblemService extends IService<DailyProblem> {
+
+    Result<List<DailyProblem>> getDailyProblemNowMonth();
+
+    Result<List<Integer>> getUserDailyStatus(Integer userId);
 
 }

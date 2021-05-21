@@ -2,6 +2,8 @@ package top.quezr.hqoj.entity;
 
 import java.time.LocalDate;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -26,6 +28,9 @@ public class DailyProblem implements Serializable {
     private LocalDate date;
 
     private Integer pid;
+
+    @TableField(exist = false)
+    private String problemName;
 
 
 }

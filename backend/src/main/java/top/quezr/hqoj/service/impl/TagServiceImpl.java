@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.Tag;
-import top.quezr.hqoj.mapper.TagMapper;
+import top.quezr.hqoj.dao.mapper.TagMapper;
 import top.quezr.hqoj.service.TagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

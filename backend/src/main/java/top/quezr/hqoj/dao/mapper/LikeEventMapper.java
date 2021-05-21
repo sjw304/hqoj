@@ -1,4 +1,4 @@
-package top.quezr.hqoj.mapper;
+package top.quezr.hqoj.dao.mapper;
 
 import top.quezr.hqoj.entity.LikeEvent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

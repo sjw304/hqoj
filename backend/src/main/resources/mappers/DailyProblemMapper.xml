@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.quezr.hqoj.mapper.DailyProblemMapper">
+<mapper namespace="top.quezr.hqoj.dao.mapper.DailyProblemMapper">
 
+    <select id="selectDailyProblemList" resultType="top.quezr.hqoj.entity.DailyProblem">
+        select dp.pid, p.name as problem_name
+        from daily_problem dp
+                 inner join problem p on p.id = dp.pid
+        where date between #{firstday} and #{today}
+    </select>
 </mapper>

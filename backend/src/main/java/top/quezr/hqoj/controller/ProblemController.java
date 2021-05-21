@@ -5,11 +5,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+import top.quezr.hqoj.entity.DailyProblem;
+import top.quezr.hqoj.security.web.Authorization;
+import top.quezr.hqoj.service.DailyProblemService;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
 import top.quezr.hqoj.support.Result;
@@ -35,6 +36,9 @@ public class ProblemController extends BaseController {
     @Autowired
     ProblemService problemService;
 
+    @Autowired
+    DailyProblemService dailyProblemService;
+
     @GetMapping
     @ApiOperation(value = "getProblemList",notes = "获取题目列表（分页）,只会返回如下字段：id, name, point, level, tags, `like`, unlike")
     public Response<PageInfo<Problem>> getProblemList(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
@@ -54,6 +58,19 @@ public class ProblemController extends BaseController {
     @ApiOperation(value = "getHotProblemList",notes = "获取热题榜，只包含id,name")
     public Response<List<Problem>> getHotProblemList(){
         Result<List<Problem>> result = problemService.getHotProblemList();
+        return returnResult(result);
+    }
+
+    @GetMapping("/daily/month")
+    public Response<List<DailyProblem>> getDailyProblemNowMonth(){
+        Result<List<DailyProblem>> result = dailyProblemService.getDailyProblemNowMonth();
+        return returnResult(result);
+    }
+
+    @GetMapping("/daily/user-status")
+    @Authorization
+    public Response<List<Integer>> getUserDailyStatus(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
+        Result<List<Integer>> result = dailyProblemService.getUserDailyStatus(userId);
         return returnResult(result);
     }
 

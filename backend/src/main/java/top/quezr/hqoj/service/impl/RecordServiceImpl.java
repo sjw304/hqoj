@@ -1,7 +1,7 @@
 package top.quezr.hqoj.service.impl;
 
 import top.quezr.hqoj.entity.Record;
-import top.quezr.hqoj.mapper.RecordMapper;
+import top.quezr.hqoj.dao.mapper.RecordMapper;
 import top.quezr.hqoj.service.RecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

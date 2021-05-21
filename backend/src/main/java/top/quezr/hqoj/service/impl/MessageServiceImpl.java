@@ -6,7 +6,7 @@ import top.quezr.hqoj.entity.Message;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.enums.MessageType;
-import top.quezr.hqoj.mapper.MessageMapper;
+import top.quezr.hqoj.dao.mapper.MessageMapper;
 import top.quezr.hqoj.service.MessageService;
 import top.quezr.hqoj.util.event.AddSolutionEvent;
 import top.quezr.hqoj.util.event.CenterEventBus;

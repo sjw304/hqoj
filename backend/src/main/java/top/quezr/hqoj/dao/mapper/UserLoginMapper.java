@@ -1,6 +1,6 @@
-package top.quezr.hqoj.mapper;
+package top.quezr.hqoj.dao.mapper;
 
-import top.quezr.hqoj.entity.UserDaily;
+import top.quezr.hqoj.entity.UserLogin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author que
  * @since 2021-05-11
  */
-public interface UserDailyMapper extends BaseMapper<UserDaily> {
+public interface UserLoginMapper extends BaseMapper<UserLogin> {
 
 }
