@@ -86,6 +86,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }
         if (StrUtil.isBlank(searchVal)){
             // 首页，使用redis缓存
+            log.debug("first page ");
             if (Objects.isNull(level) && Objects.isNull(tagSearch) && PageInfo.isFirstPage(pageInfo)){
                 PageInfo<Problem> data = getFirstPage(pageInfo);
                 result.setData(data);
@@ -241,6 +242,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         // 防止list为空
         list = Objects.isNull(list)?new ArrayList<>():list;
         int size = list.size();
+        log.debug("size : {}",size);
         List<Problem> afterProblemList = null;
         // redis中数据不足
         if (size < pageInfo.getPageSize()){
@@ -253,6 +255,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if (Objects.nonNull(afterProblemList)){
             problemList.addAll(afterProblemList);
         }
+        pageInfo.setData(problemList);
 
         if (pageInfo.getHasCount()){
             Integer count;
@@ -265,6 +268,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             }
             pageInfo.setTotalCount(count);
         }
+
 
         return pageInfo;
     }
