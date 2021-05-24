@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import top.quezr.hqoj.controller.dto.LoginResult;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.User;
@@ -21,6 +22,7 @@ import top.quezr.hqoj.util.event.UserRegisterEvent;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
@@ -49,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result<LoginResult> loginByPassword(String email, String password, HttpServletRequest request) {
+    public Result<LoginResult> loginByPassword(@Validated @NotBlank String email,@Validated @NotBlank String password, HttpServletRequest request) {
         Result<LoginResult> result = new Result<>();
         password = SecureUtil.md5(password);
 
@@ -72,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result<LoginResult> loginByCode(String email, String code, HttpServletRequest request) {
+    public Result<LoginResult> loginByCode(@Validated @NotBlank String email, @Validated @NotBlank String code, HttpServletRequest request) {
         Result<LoginResult> result = new Result<>();
         Result<String> verifyResult = verifyEmailService.verifyEmailWithCode(email, code);
         if (!verifyResult.isSuccess()){
