@@ -25,6 +25,7 @@ import top.quezr.hqoj.service.UserService;
 import top.quezr.hqoj.support.Response;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
@@ -49,14 +50,14 @@ public class UserController extends BaseController {
 
     @PostMapping("/login/password")
     @ApiOperation("使用密码登录")
-    public Response<LoginResult> loginByPassword(String email, String password, HttpServletRequest request){
+    public Response<LoginResult> loginByPassword(@Validated @NotBlank String email,@Validated @NotBlank  String password, HttpServletRequest request){
         Result<LoginResult> result = userService.loginByPassword(email, password, request);
         return returnResult(result);
     }
 
     @PostMapping("/login/code")
     @ApiOperation("使用验证码登录")
-    public Response<LoginResult> loginByCode(String email, String code, HttpServletRequest request){
+    public Response<LoginResult> loginByCode(@Validated @NotBlank String email,@Validated @NotBlank  String code, HttpServletRequest request){
         Result<LoginResult> result = userService.loginByCode(email, code, request);
         return returnResult(result);
     }

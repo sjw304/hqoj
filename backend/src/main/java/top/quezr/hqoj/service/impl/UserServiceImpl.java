@@ -51,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result<LoginResult> loginByPassword(@Validated @NotBlank String email,@Validated @NotBlank String password, HttpServletRequest request) {
+    public Result<LoginResult> loginByPassword(String email,String password, HttpServletRequest request) {
         Result<LoginResult> result = new Result<>();
         password = SecureUtil.md5(password);
 
@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result<LoginResult> loginByCode(@Validated @NotBlank String email, @Validated @NotBlank String code, HttpServletRequest request) {
+    public Result<LoginResult> loginByCode(String email,String code, HttpServletRequest request) {
         Result<LoginResult> result = new Result<>();
         Result<String> verifyResult = verifyEmailService.verifyEmailWithCode(email, code);
         if (!verifyResult.isSuccess()){
