@@ -7,6 +7,7 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import top.quezr.hqoj.enums.ProblemLevel;
 
 /**
  * <p>
@@ -44,5 +45,14 @@ public class Solution implements Serializable {
 
     private String summary;
 
+    public static Solution fromEs(SolutionSearch search){
+        Solution p = new Solution();
+        p.setId(search.getId());
+        p.setPid(search.getPid());
+        p.setSummary(search.getSummary());
+        p.setTags(search.getTags());
+        p.setTitle(search.getTitle());
+        return p;
+    }
 
 }
