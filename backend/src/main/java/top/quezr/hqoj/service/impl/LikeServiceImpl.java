@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import top.quezr.hqoj.entity.LikeEvent;
 import top.quezr.hqoj.enums.ItemType;
 import top.quezr.hqoj.enums.LikeType;
-import top.quezr.hqoj.mapper.LikeEventMapper;
+import top.quezr.hqoj.dao.mapper.LikeEventMapper;
 import top.quezr.hqoj.service.LikeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

@@ -1,5 +1,6 @@
 package top.quezr.hqoj.service;
 
+import top.quezr.hqoj.entity.ProblemCount;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
 import top.quezr.hqoj.support.Result;
@@ -22,4 +23,8 @@ public interface ProblemService extends IService<Problem> {
     Result<Problem> getProblemById(Integer id);
 
     Result<List<Problem>> getHotProblemList();
+
+    Result<ProblemCount> getUserPassedCount(Integer userId);
+
+    Result<ProblemCount> getTotalCount();
 }

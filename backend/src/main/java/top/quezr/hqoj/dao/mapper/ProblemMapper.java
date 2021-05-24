@@ -1,9 +1,6 @@
-package top.quezr.hqoj.mapper;
+package top.quezr.hqoj.dao.mapper;
 
-import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.cache.ehcache.EhCacheCache;
-import top.quezr.hqoj.cache.RedisCache4Mybatis;
 import top.quezr.hqoj.entity.Problem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -31,4 +28,6 @@ public interface ProblemMapper extends BaseMapper<Problem> {
                                      @Param("level") Integer level);
 
     Integer updateLike(@Param("id") Integer id, @Param("num") Integer num);
+
+    List<Integer> getTotalCount();
 }

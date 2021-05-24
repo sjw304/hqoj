@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.quezr.hqoj.mapper.UserDailyMapper">
+<mapper namespace="top.quezr.hqoj.dao.mapper.UserDailyMapper">
 
+    <select id="selectUserStatus" resultType="java.lang.Integer">
+        select status from user_daily where uid=#{userId} and month=#{first}
+    </select>
 </mapper>

@@ -1,4 +1,4 @@
-package top.quezr.hqoj.mapper;
+package top.quezr.hqoj.dao.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import top.quezr.hqoj.entity.Message;
@@ -21,7 +21,7 @@ public interface MessageMapper extends BaseMapper<Message> {
                         @Param("title") String title,
                         @Param("content") String content);
 
-    List<Message> selectMessagePage(@Param("userId") Integer level,
+    List<Message> selectMessagePage(@Param("userId") Integer userId,
                            @Param("pageSize") Integer pageSize,
                            @Param("pageFrom") int pageFrom,
                            @Param("lastId") Integer lastId);
@@ -37,4 +37,6 @@ public interface MessageMapper extends BaseMapper<Message> {
     Integer deleteReadMessages(Integer userId);
 
     Integer unreadAllMessage(Integer userId);
+
+    List<Message> selectAllNoReadMessages(Integer userId);
 }

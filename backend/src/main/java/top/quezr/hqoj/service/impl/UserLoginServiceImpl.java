@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.UserLogin;
-import top.quezr.hqoj.mapper.UserLoginMapper;
+import top.quezr.hqoj.dao.mapper.UserLoginMapper;
 import top.quezr.hqoj.service.UserLoginService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

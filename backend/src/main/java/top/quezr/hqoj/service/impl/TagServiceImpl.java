@@ -3,11 +3,12 @@ package top.quezr.hqoj.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.entity.Tag;
-import top.quezr.hqoj.mapper.TagMapper;
+import top.quezr.hqoj.dao.mapper.TagMapper;
 import top.quezr.hqoj.service.TagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,18 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     RedisTemplate<String, String> redisTemplate;
 
     BoundHashOperations<String, Object, Object> tagMap;
+    BoundListOperations<String, String> tagList;
 
-    private static final String TAG_REDIS_KEY_PREFIX = "tagHash";
+
+    private static final String TAG_HASH_KEY = "tagHash";
+    private static final String TAG_LIST_KEY = "tagList";
 
     private static final String EMPTY_TAG = "emp";
 
     @PostConstruct
     private void init(){
-        tagMap = redisTemplate.boundHashOps(TAG_REDIS_KEY_PREFIX);
+        tagMap = redisTemplate.boundHashOps(TAG_HASH_KEY);
+        tagList = redisTemplate.boundListOps(TAG_LIST_KEY);
     }
 
     @Override
@@ -51,7 +56,6 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         List<Tag> result = new ArrayList<>(ids.length);
         for (Integer id : ids) {
             String name = (String) map.get(String.valueOf(id));
-            log.debug("name : {}",name);
             if (Objects.isNull(name)){
                 Tag t = baseMapper.selectById(id);
                 if (Objects.isNull(t)){
@@ -94,6 +98,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         setTagExistsInRedis(tag.getId(),tag.getName());
         baseMapper.updateById(tag);
         return result;
+    }
+
+    @Override
+    public List<Tag> getAllTags() {
+        return baseMapper.selectList(null);
     }
 
     private void setTagExistsInRedis(Integer id, String name) {

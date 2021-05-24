@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.quezr.hqoj.mapper.ProblemMapper">
+<mapper namespace="top.quezr.hqoj.dao.mapper.ProblemMapper">
     <update id="updateLike">
         update problem set `like`=`like`+#{num} where id=#{id}
     </update>
 
-    <!--    <cache-ref namespace="top.quezr.hqoj.mapper.ProblemMapper"/>-->
+    <!--    <cache-ref namespace="top.quezr.hqoj.dao.mapper.ProblemMapper"/>-->
 
     <select id="getProblemList" resultType="top.quezr.hqoj.entity.Problem">
-        select id, name, point, level, tags, `like`, unlike
+        select id, name, point, level, tags
         from problem
         <where>
             <if test="level!=null">
@@ -39,5 +39,8 @@
                 AND json_contains(tags->"$", '${tagSearch}')
             </if>
         </where>
+    </select>
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(*) as c from problem group by level;
     </select>
 </mapper>

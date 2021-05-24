@@ -18,6 +18,7 @@ import top.quezr.hqoj.support.Response;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * <p>
@@ -52,10 +53,18 @@ public class MessageController extends BaseController {
         return new Response<Message>().success(message);
     }
 
-    @GetMapping("/read")
+    @GetMapping("/noread")
     @ApiOperation("当前用户是否有未读消息")
-    public Response<Boolean> hasNoReadMessage(@Validated @Min(0) @NotNull Integer userId){
+    @Authorization
+    public Response<Boolean> hasNoReadMessage(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
         Result<Boolean> result =  messageService.getHasNoReadMessage(userId);
+        return returnResult(result);
+    }
+
+    @GetMapping("/noread/list")
+    @Authorization
+    public Response<List<Message>> getAllNoReadMessages(@RequestAttribute(Authorization.USERID_ATTR)@ApiIgnore Integer userId){
+        Result<List<Message>> result = messageService.getAllNoReadMessages(userId);
         return returnResult(result);
     }
 

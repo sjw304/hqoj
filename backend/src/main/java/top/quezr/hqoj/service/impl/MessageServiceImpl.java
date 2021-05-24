@@ -6,7 +6,7 @@ import top.quezr.hqoj.entity.Message;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.enums.MessageType;
-import top.quezr.hqoj.mapper.MessageMapper;
+import top.quezr.hqoj.dao.mapper.MessageMapper;
 import top.quezr.hqoj.service.MessageService;
 import top.quezr.hqoj.util.event.AddSolutionEvent;
 import top.quezr.hqoj.util.event.CenterEventBus;
@@ -84,6 +84,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     public void unreadAllMessage(Integer userId) {
         baseMapper.unreadAllMessage(userId);
+    }
+
+    @Override
+    public Result<List<Message>> getAllNoReadMessages(Integer userId) {
+        Result<List<Message>> result = new Result<>();
+        List<Message> list =  baseMapper.selectAllNoReadMessages(userId);;
+        result.setData(list==null?List.of():list);
+        return result;
     }
 
     @Override

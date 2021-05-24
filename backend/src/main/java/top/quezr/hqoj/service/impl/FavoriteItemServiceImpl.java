@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import top.quezr.hqoj.entity.Favorite;
 import top.quezr.hqoj.entity.FavoriteItem;
 import top.quezr.hqoj.support.Result;
-import top.quezr.hqoj.mapper.FavoriteItemMapper;
-import top.quezr.hqoj.mapper.FavoriteMapper;
+import top.quezr.hqoj.dao.mapper.FavoriteItemMapper;
+import top.quezr.hqoj.dao.mapper.FavoriteMapper;
 import top.quezr.hqoj.service.FavoriteItemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -58,6 +58,9 @@ public class FavoriteItemServiceImpl extends ServiceImpl<FavoriteItemMapper, Fav
         }
 
         baseMapper.insert(item);
+        favorite.setSize(favorite.getSize()+1);
+        favoriteMapper.updateById(favorite);
+
         return result;
     }
 
@@ -79,6 +82,10 @@ public class FavoriteItemServiceImpl extends ServiceImpl<FavoriteItemMapper, Fav
         }
 
         baseMapper.deleteById(itemId);
+        baseMapper.insert(item);
+        favorite.setSize(favorite.getSize()-1);
+        favoriteMapper.updateById(favorite);
+
         return result;
     }
 }
