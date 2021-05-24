@@ -16,7 +16,9 @@ import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.quezr.hqoj.dao.esdao.EsProblemDao;
+import top.quezr.hqoj.dao.mapper.UserPassedMapper;
 import top.quezr.hqoj.entity.LikeEvent;
+import top.quezr.hqoj.entity.ProblemCount;
 import top.quezr.hqoj.enums.ItemType;
 import top.quezr.hqoj.enums.LikeType;
 import top.quezr.hqoj.support.PageInfo;
@@ -53,13 +55,18 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     private static final String EMPTY_PROBLEM_VALUE = "emp";
     private static final String PRO_LIST_KEY = "pro:f:list";
     private static final String PRO_LIST_COUNT_KEY = "pro:f:count";
+    private static final String PRO_TOTAL_COUNT_KEY = "pro:total:count";
     private static final String PROBLEM_LIKE_HASH_KEY = "hash:count:p:";
     private static final String PROBLEM_LIKE_LOCK_KEY = "lock:count:p:";
+    private static final String USER_PASSED_COUNT_KEY = "passed:count:%s:";
 
     /**
      * jackson 序列化工具
      */
     private ObjectMapper objectMapper;
+
+    @Autowired(required = false)
+    UserPassedMapper userPassedMapper;
 
     @Autowired
     private EsProblemDao esProblemDao;
@@ -147,6 +154,53 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             problems.add(problem);
         }
         result.setData(problems);
+        return result;
+    }
+
+    @Override
+    public Result<ProblemCount> getUserPassedCount(Integer userId) {
+        Result<ProblemCount> result = new Result<>();
+
+        String key = String.format(USER_PASSED_COUNT_KEY,userId);
+        String countVal = redisTemplate.opsForValue().get(key);
+        List<Integer> countList;
+        if (Objects.isNull(countVal)){
+            countList = userPassedMapper.selectUserPassedCount(userId);
+            countVal =  countList.stream().map(String::valueOf).collect(Collectors.joining(","));
+            redisTemplate.opsForValue().set(key,countVal,3,TimeUnit.DAYS);
+        }else {
+            countList = Arrays.stream(countVal.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+        }
+
+        ProblemCount count = new ProblemCount();
+        count.setEasy(countList.get(0));
+        count.setMedium(countList.get(1));
+        count.setHard(countList.get(2));
+        result.setData(count);
+
+        return result;
+    }
+
+    @Override
+    public Result<ProblemCount> getTotalCount(){
+        Result<ProblemCount> result = new Result<>();
+        String key = PRO_TOTAL_COUNT_KEY;
+        String countVal = redisTemplate.opsForValue().get(key);
+        List<Integer> countList;
+        if (Objects.isNull(countVal)){
+            countList = baseMapper.getTotalCount();
+            countVal =  countList.stream().map(String::valueOf).collect(Collectors.joining(","));
+            redisTemplate.opsForValue().set(key,countVal,3,TimeUnit.DAYS);
+        }else {
+            countList = Arrays.stream(countVal.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+        }
+
+        ProblemCount count = new ProblemCount();
+        count.setEasy(countList.get(0));
+        count.setMedium(countList.get(1));
+        count.setHard(countList.get(2));
+        result.setData(count);
+
         return result;
     }
 

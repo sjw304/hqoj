@@ -28,4 +28,6 @@ public interface ProblemMapper extends BaseMapper<Problem> {
                                      @Param("level") Integer level);
 
     Integer updateLike(@Param("id") Integer id, @Param("num") Integer num);
+
+    List<Integer> getTotalCount();
 }

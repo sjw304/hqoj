@@ -21,7 +21,7 @@ public interface MessageMapper extends BaseMapper<Message> {
                         @Param("title") String title,
                         @Param("content") String content);
 
-    List<Message> selectMessagePage(@Param("userId") Integer level,
+    List<Message> selectMessagePage(@Param("userId") Integer userId,
                            @Param("pageSize") Integer pageSize,
                            @Param("pageFrom") int pageFrom,
                            @Param("lastId") Integer lastId);

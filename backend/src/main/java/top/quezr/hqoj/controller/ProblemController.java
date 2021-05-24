@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.annotations.ApiIgnore;
 import top.quezr.hqoj.entity.DailyProblem;
+import top.quezr.hqoj.entity.ProblemCount;
 import top.quezr.hqoj.enums.ProblemLevel;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.DailyProblemService;
@@ -72,6 +73,19 @@ public class ProblemController extends BaseController {
     @Authorization
     public Response<List<Integer>> getUserDailyStatus(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
         Result<List<Integer>> result = dailyProblemService.getUserDailyStatus(userId);
+        return returnResult(result);
+    }
+
+    @GetMapping("/user/count")
+    @Authorization
+    public Response<ProblemCount> getUserPassedCount(@RequestAttribute(Authorization.USERID_ATTR) @ApiIgnore Integer userId){
+        Result<ProblemCount> result = problemService.getUserPassedCount(userId);
+        return returnResult(result);
+    }
+
+    @GetMapping("/count")
+    public Response<ProblemCount> getTotalCount(){
+        Result<ProblemCount> result = problemService.getTotalCount();
         return returnResult(result);
     }
 

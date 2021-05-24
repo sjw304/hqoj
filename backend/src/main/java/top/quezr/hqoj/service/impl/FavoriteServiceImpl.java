@@ -52,7 +52,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
             return result;
         }
 
-        Favorite favorite = new Favorite(null,userId,name);;
+        Favorite favorite = new Favorite(null,userId,name,0);
         baseMapper.insert(favorite);
         log.debug("genId :{}",favorite.getId());
         result.setData(favorite.getId());
@@ -80,7 +80,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
 
     @Subscribe
     private void createDefaultFavorite(UserRegisterEvent event){
-        baseMapper.insert(new Favorite(null,event.getUser().getId(),DEFAULT_FAVORITE_NAME));
+        baseMapper.insert(new Favorite(null,event.getUser().getId(),DEFAULT_FAVORITE_NAME,0));
     }
 
     private boolean checkRepeatedName(Integer userId,String name,Result result){

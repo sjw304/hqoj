@@ -15,6 +15,7 @@ import top.quezr.hqoj.entity.Record;
 import top.quezr.hqoj.enums.JudgeStauts;
 import top.quezr.hqoj.security.web.Authorization;
 import top.quezr.hqoj.service.RecordService;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Response;
 import top.quezr.hqoj.support.Result;
 
@@ -61,5 +62,19 @@ public class RecordController extends BaseController {
         Result<JudgeStauts> result = recordService.getStateById(id);
         return returnResult(result);
     }
+
+    @GetMapping
+    @Authorization
+    @ApiOperation("获取用户提交历史（分页）")
+    public Response<PageInfo<Record>> getUserRecordPage( @RequestAttribute(Authorization.USERID_ATTR)@ApiIgnore Integer userId,PageInfo<Void> pageInfo){
+        PageInfo<Record> pageInfor = new PageInfo<>();
+        pageInfor.setHasCount(pageInfo.getHasCount());
+        pageInfor.setPageSize(pageInfo.getPageSize());
+        pageInfor.setPageNumber(pageInfo.getPageNumber());
+        pageInfor.setLastId(pageInfo.getLastId());
+        Result<PageInfo<Record>> result = recordService.getUserRecordPage(userId,pageInfor);
+        return returnResult(result);
+    }
+
 
 }

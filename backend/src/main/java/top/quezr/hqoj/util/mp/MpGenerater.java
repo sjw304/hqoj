@@ -47,9 +47,9 @@ public class MpGenerater {
         PackageConfig pc = new PackageConfig();
         pc.setParent("top.quezr.hqoj");
         pc.setEntity("entity");
-        pc.setMapper("mapper");
-        pc.setController("controller");
-        pc.setService("service");
+        pc.setMapper("dao.mapper");
+        //pc.setController("controller");
+        //pc.setService("service");
         mpg.setPackageInfo(pc);
 
         mpg.setTemplate(new TemplateConfig());
@@ -65,7 +65,7 @@ public class MpGenerater {
 
         // 写于父类中的公共字段
         strategy.setInclude(
-                "add_coin_reason"
+                "user_passed"
         );
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);

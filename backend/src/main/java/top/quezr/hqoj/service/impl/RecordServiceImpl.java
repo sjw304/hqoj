@@ -4,14 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import top.quezr.hqoj.entity.Message;
 import top.quezr.hqoj.entity.Record;
 import top.quezr.hqoj.dao.mapper.RecordMapper;
 import top.quezr.hqoj.enums.JudgeStauts;
 import top.quezr.hqoj.service.RecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Result;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -81,6 +84,20 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
                 result.setData(JudgeStauts.of(Integer.parseInt(stateVal)));
             }
         }
+        return result;
+    }
+
+    @Override
+    public Result<PageInfo<Record>> getUserRecordPage(Integer userId, PageInfo<Record> pageInfo) {
+        pageInfo = PageInfo.normalizing(pageInfo);
+        Result<PageInfo<Record>> result = new Result<>();
+        List<Record> list = baseMapper.selectRecordPage(userId,  pageInfo.getPageSize(), pageInfo.getPageNumber()*pageInfo.getPageSize(), pageInfo.getLastId());
+        pageInfo.setData(list);
+        if (pageInfo.getHasCount()){
+            Integer count = baseMapper.selectRecordPageTotalCount(userId);
+            pageInfo.setTotalCount(count);
+        }
+        result.setData(pageInfo);
         return result;
     }
 }

@@ -5,4 +5,22 @@
     <select id="selectStateById" resultType="top.quezr.hqoj.enums.JudgeStauts">
         select state from record where id=#{id}
     </select>
+    <select id="selectRecordPage" resultType="top.quezr.hqoj.entity.Record">
+        select id, pid, uid, state, time, used_time, used_space, language_type
+        from record
+        where uid=#{userId}
+        <if test="lastId>0">
+            AND id > #{lastId}
+        </if>
+        limit
+        <if test="lastId==0 and pageFrom!=0">
+            #{pageFrom},
+        </if>
+        #{pageSize}
+    </select>
+    <select id="selectRecordPageTotalCount" resultType="java.lang.Integer">
+        select count(*)
+        from record
+        where uid=#{userId}
+    </select>
 </mapper>

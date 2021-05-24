@@ -58,6 +58,9 @@ public class FavoriteItemServiceImpl extends ServiceImpl<FavoriteItemMapper, Fav
         }
 
         baseMapper.insert(item);
+        favorite.setSize(favorite.getSize()+1);
+        favoriteMapper.updateById(favorite);
+
         return result;
     }
 
@@ -79,6 +82,10 @@ public class FavoriteItemServiceImpl extends ServiceImpl<FavoriteItemMapper, Fav
         }
 
         baseMapper.deleteById(itemId);
+        baseMapper.insert(item);
+        favorite.setSize(favorite.getSize()-1);
+        favoriteMapper.updateById(favorite);
+
         return result;
     }
 }

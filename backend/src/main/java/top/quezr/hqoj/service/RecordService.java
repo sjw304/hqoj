@@ -3,6 +3,7 @@ package top.quezr.hqoj.service;
 import top.quezr.hqoj.entity.Record;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.quezr.hqoj.enums.JudgeStauts;
+import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.support.Result;
 
 /**
@@ -19,4 +20,6 @@ public interface RecordService extends IService<Record> {
 
 
     Result<JudgeStauts> getStateById(Integer id);
+
+    Result<PageInfo<Record>> getUserRecordPage(Integer userId, PageInfo<Record> pageInfo);
 }
