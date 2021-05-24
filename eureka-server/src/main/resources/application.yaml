@@ -1,0 +1,21 @@
+server:
+  port: 7001
+
+eureka:
+  instance:
+    # 服务器实例名称
+    hostname: ojEureka.com
+  client:
+    # 表示不注册自己
+    register-with-eureka: false
+    # false表示自己端就是注册中心，职责就是维护服务实例，不需要去检测服务
+    fetch-registry: false
+    service-url:
+      defaultZone: http://ojEureka.com:7001/eureka/
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 2000
+
+logging:
+  level:
+    com.netflix: warn

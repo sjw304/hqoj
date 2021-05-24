@@ -3,20 +3,15 @@ package top.quezr.hqoj.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import top.quezr.hqoj.dao.esdao.EsSolutionDao;
 import top.quezr.hqoj.entity.*;
 import top.quezr.hqoj.enums.ItemType;
 import top.quezr.hqoj.enums.LikeType;
 import top.quezr.hqoj.dao.mapper.SolutionMapper;
+import top.quezr.hqoj.service.EsService;
 import top.quezr.hqoj.service.SolutionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -56,7 +51,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     }
 
     @Autowired
-    EsSolutionDao esSolutionDao;
+    EsService esService;
 
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
@@ -79,7 +74,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             }
             result.setData(pageInfo);
         } else {
-            PageInfo<Solution> list = getSolutionListInEs(problemId, tags, searchVal, pageInfo);
+            PageInfo<Solution> list = esService.getSolutionListInEs(problemId, tags, searchVal, pageInfo);
             result.setData(list);
         }
         return result;
@@ -106,56 +101,6 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
         return new Result<>();
     }
 
-    /**
-     * 通过es搜索题解
-     * @param problemId NOT_NULL
-     * @param tags NULL_ABLE
-     * @param searchVal NOT_NULL
-     * @param pageInfo NOT_NULL
-     * @return pageInfo
-     */
-    private PageInfo<Solution> getSolutionListInEs(Integer problemId, Integer[] tags, String searchVal, PageInfo<Solution> pageInfo){
-        //构建两个查询器，一个是必须包含的数据，一个是可包含可不包含的数据
-        BoolQueryBuilder mustBuilder = QueryBuilders.boolQuery();
-        BoolQueryBuilder shouldBuilder = QueryBuilders.boolQuery();
-
-        //problemID作为特定题的题解，必须包含
-        mustBuilder.must(QueryBuilders.matchQuery("pid",problemId));
-
-        //如果含有标签，则必须符合所有标签
-        if(Objects.nonNull(tags) && tags.length!=0){
-            for(int i : tags){
-                mustBuilder.must(QueryBuilders.matchQuery("tags",i));
-            }
-        }
-
-        shouldBuilder.should(QueryBuilders.wildcardQuery("title","*"+searchVal+"*"));
-        shouldBuilder.should(QueryBuilders.wildcardQuery("summary","*"+searchVal+"*"));
-
-        shouldBuilder.should(QueryBuilders.multiMatchQuery(searchVal,"title","summary"));
-
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-        nativeSearchQueryBuilder.withQuery(mustBuilder.must(shouldBuilder));
-
-        PageRequest pageRequest = PageRequest.of(pageInfo.getPageNumber(), pageInfo.getPageSize());
-
-        //获取查询到的结果
-        NativeSearchQuery query = nativeSearchQueryBuilder.withPageable(pageRequest).build();
-
-        Page<SolutionSearch> page = esSolutionDao.search(query);
-        //将查询到的结果加入列表
-        List<SolutionSearch> content = page.getContent();
-
-        if (pageInfo.getHasCount()){
-            pageInfo.setTotalCount((int)page.getTotalElements());
-        }
-
-        List<Solution> data = content.stream().map(Solution::fromEs).collect(Collectors.toList());
-
-        pageInfo.setData(data);
-
-        return pageInfo;
-    }
 
     @Subscribe
     private void onAddLike(LikeEvent event){
