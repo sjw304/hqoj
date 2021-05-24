@@ -5,25 +5,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import top.quezr.hqoj.dao.esdao.EsProblemDao;
 import top.quezr.hqoj.dao.mapper.UserPassedMapper;
 import top.quezr.hqoj.entity.LikeEvent;
 import top.quezr.hqoj.entity.ProblemCount;
 import top.quezr.hqoj.enums.ItemType;
 import top.quezr.hqoj.enums.LikeType;
+import top.quezr.hqoj.service.EsService;
 import top.quezr.hqoj.support.PageInfo;
 import top.quezr.hqoj.entity.Problem;
-import top.quezr.hqoj.entity.ProblemSearch;
 import top.quezr.hqoj.support.Result;
 import top.quezr.hqoj.dao.mapper.ProblemMapper;
 import top.quezr.hqoj.service.ProblemService;
@@ -69,7 +62,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     UserPassedMapper userPassedMapper;
 
     @Autowired
-    private EsProblemDao esProblemDao;
+    EsService esService;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -110,7 +103,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             return result;
         }
 
-        PageInfo<Problem> esPageInfo = getProblemListInEs(tags,searchVal,level,pageInfo);
+        PageInfo<Problem> esPageInfo = esService.getProblemListInEs(tags==null?new Integer[]{}:tags,searchVal,level,pageInfo);
         result.setData(esPageInfo);
         return result;
     }
@@ -204,68 +197,6 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         return result;
     }
 
-    /**
-     * 通过es搜索题目
-     * @param tags NULL_ABLE
-     * @param searchVal NOT_NULL
-     * @param level NULL_ABLE
-     * @param pageInfo NOT_NULL
-     * @return pageInfo
-     */
-    private PageInfo<Problem> getProblemListInEs(Integer[] tags, String searchVal, Integer level, PageInfo<Problem> pageInfo){
-
-
-        //创造两个查询器，一个是必须包含的查询器，一个是至少包含一个的查询器
-        //查询到的数据必定完全包含mustBuilder，只需要包含shouldBuilder中的一个即可
-        BoolQueryBuilder mustBuilder = QueryBuilders.boolQuery();
-        BoolQueryBuilder shouldBuilder = QueryBuilders.boolQuery();
-
-        //判定tags是否为空，如果不为空则将tags中所有标签列入mustBuilder
-        if(Objects.nonNull(tags) && tags.length!=0){
-            for(int i : tags){
-                mustBuilder.must(QueryBuilders.matchQuery("tags",i));
-            }
-        }
-
-        //判定level是否为空，如果不为空则将level填入mustBuilder
-        if(Objects.nonNull(level)){
-            mustBuilder.must(QueryBuilders.matchQuery("level",level));
-        }
-
-        //判定标题、内容中是否含有searchVal，wildcardQuery是通配符查询，该意义为只要标题或内容分词后的词列表中包含searchVal则可以被查询到
-        shouldBuilder.should(QueryBuilders.wildcardQuery("name", "*"+searchVal+"*"));
-        shouldBuilder.should(QueryBuilders.wildcardQuery("description", "*"+searchVal+"*"));
-
-        //由于wildcardQuery不会对searchVal进行分词，所以如果查找“两数和”是不会出现标题为“两数之和”的题目的
-        //在这里进行能够将searchVal分词的查询条件
-        shouldBuilder.should(QueryBuilders.multiMatchQuery(searchVal, "name","description"));
-
-        //创建查询数据时使用的对象
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-
-        //填入查询条件
-        //must与should在同一个查询条件下，should会失效。所以创建两个builder，并将shouldBuild而设为mustBuilder的必须
-        nativeSearchQueryBuilder.withQuery(mustBuilder.must(shouldBuilder));
-
-        PageRequest pageRequest = PageRequest.of(pageInfo.getPageNumber(),pageInfo.getPageSize());
-
-        //获取查询到的结果
-        NativeSearchQuery query = nativeSearchQueryBuilder.withPageable(pageRequest).build();
-
-        Page<ProblemSearch> page = esProblemDao.search(query);
-        //将查询到的结果加入列表
-        List<ProblemSearch> content = page.getContent();
-
-        if (pageInfo.getHasCount()){
-            pageInfo.setTotalCount((int)page.getTotalElements());
-        }
-
-        List<Problem> data = content.stream().map(Problem::fromEs).collect(Collectors.toList());
-
-        pageInfo.setData(data);
-
-        return pageInfo;
-    }
 
     /**
      * 将数据缓存在redis
